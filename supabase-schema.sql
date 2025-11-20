@@ -15,9 +15,6 @@ CREATE TABLE IF NOT EXISTS public.users (
 CREATE TABLE IF NOT EXISTS public.products (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
-  brand TEXT NOT NULL,
-  type TEXT NOT NULL,
-  category TEXT NOT NULL,
   quantity NUMERIC(10, 2) NOT NULL DEFAULT 0 CHECK (quantity >= 0),
   buying_price NUMERIC(10, 2) NOT NULL CHECK (buying_price >= 0),
   selling_price NUMERIC(10, 2) NOT NULL CHECK (selling_price >= 0),
@@ -39,7 +36,6 @@ CREATE TABLE IF NOT EXISTS public.sales (
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_products_created_by ON public.products(created_by);
-CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
 CREATE INDEX IF NOT EXISTS idx_sales_product_id ON public.sales(product_id);
 CREATE INDEX IF NOT EXISTS idx_sales_sold_by ON public.sales(sold_by);
 CREATE INDEX IF NOT EXISTS idx_sales_sold_at ON public.sales(sold_at);
@@ -49,6 +45,24 @@ ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.sales ENABLE ROW LEVEL SECURITY;
 
+-- Function to get user role (bypasses RLS to prevent infinite recursion)
+CREATE OR REPLACE FUNCTION public.get_user_role(user_id UUID)
+RETURNS TEXT
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  user_role TEXT;
+BEGIN
+  SELECT role INTO user_role
+  FROM public.users
+  WHERE id = user_id;
+  
+  RETURN COALESCE(user_role, 'seller');
+END;
+$$;
+
 -- Users policies
 CREATE POLICY "Users can view their own profile"
   ON public.users FOR SELECT
@@ -56,21 +70,11 @@ CREATE POLICY "Users can view their own profile"
 
 CREATE POLICY "Superadmins can view all users"
   ON public.users FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'superadmin'
-    )
-  );
+  USING (public.get_user_role(auth.uid()) = 'superadmin');
 
 CREATE POLICY "Superadmins can update all users"
   ON public.users FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role = 'superadmin'
-    )
-  );
+  USING (public.get_user_role(auth.uid()) = 'superadmin');
 
 -- Products policies
 CREATE POLICY "Anyone authenticated can view products"
@@ -80,28 +84,19 @@ CREATE POLICY "Anyone authenticated can view products"
 CREATE POLICY "Sellers, Admins, and Superadmins can create products"
   ON public.products FOR INSERT
   WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role IN ('seller', 'admin', 'superadmin')
-    )
+    public.get_user_role(auth.uid()) IN ('seller', 'admin', 'superadmin')
   );
 
 CREATE POLICY "Admins and Superadmins can update products"
   ON public.products FOR UPDATE
   USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
-    )
+    public.get_user_role(auth.uid()) IN ('admin', 'superadmin')
   );
 
 CREATE POLICY "Admins and Superadmins can delete products"
   ON public.products FOR DELETE
   USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
-    )
+    public.get_user_role(auth.uid()) IN ('admin', 'superadmin')
   );
 
 -- Sales policies
@@ -112,28 +107,19 @@ CREATE POLICY "Anyone authenticated can view sales"
 CREATE POLICY "Sellers, Admins, and Superadmins can create sales"
   ON public.sales FOR INSERT
   WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role IN ('seller', 'admin', 'superadmin')
-    )
+    public.get_user_role(auth.uid()) IN ('seller', 'admin', 'superadmin')
   );
 
 CREATE POLICY "Admins and Superadmins can update sales"
   ON public.sales FOR UPDATE
   USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
-    )
+    public.get_user_role(auth.uid()) IN ('admin', 'superadmin')
   );
 
 CREATE POLICY "Admins and Superadmins can delete sales"
   ON public.sales FOR DELETE
   USING (
-    EXISTS (
-      SELECT 1 FROM public.users
-      WHERE id = auth.uid() AND role IN ('admin', 'superadmin')
-    )
+    public.get_user_role(auth.uid()) IN ('admin', 'superadmin')
   );
 
 -- Function to automatically update updated_at timestamp
