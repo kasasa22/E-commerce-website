@@ -1,14 +1,14 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-6">
+  <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-5 md:space-y-6">
     <div>
-      <label for="product_id" class="block text-sm font-medium text-gray-700">
+      <label for="product_id" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
         Product *
       </label>
       <select
         id="product_id"
         v-model="formData.product_id"
         required
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base px-3 py-2.5"
       >
         <option value="">Select a product</option>
         <option
@@ -16,13 +16,13 @@
           :key="product.id"
           :value="product.id"
         >
-          {{ product.name }} ({{ product.brand }}) - Stock: {{ product.quantity }}
+          {{ product.name }} - Stock: {{ product.quantity }}
         </option>
       </select>
     </div>
 
     <div>
-      <label for="quantity" class="block text-sm font-medium text-gray-700">
+      <label for="quantity" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
         Quantity *
       </label>
       <input
@@ -33,15 +33,15 @@
         step="0.01"
         required
         :max="selectedProduct?.quantity || 0"
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base px-3 py-2.5"
       />
-      <p v-if="selectedProduct" class="mt-1 text-sm text-gray-500">
+      <p v-if="selectedProduct" class="mt-1.5 text-xs sm:text-sm text-gray-500">
         Available: {{ selectedProduct.quantity }} {{ selectedProduct.quantity > 1 ? 'units' : 'unit' }}
       </p>
     </div>
 
     <div>
-      <label for="selling_price" class="block text-sm font-medium text-gray-700">
+      <label for="selling_price" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
         Selling Price *
       </label>
       <input
@@ -51,12 +51,12 @@
         min="0"
         step="0.01"
         required
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base px-3 py-2.5"
       />
     </div>
 
     <div>
-      <label for="sold_at" class="block text-sm font-medium text-gray-700">
+      <label for="sold_at" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
         Sale Date *
       </label>
       <input
@@ -64,33 +64,33 @@
         v-model="formData.sold_at"
         type="datetime-local"
         required
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base px-3 py-2.5"
       />
     </div>
 
-    <div v-if="selectedProduct && formData.quantity && formData.selling_price" class="p-4 bg-gray-50 rounded-md">
-      <p class="text-sm text-gray-700">
+    <div v-if="selectedProduct && formData.quantity && formData.selling_price" class="p-3 sm:p-4 bg-gray-50 rounded-md border-2 border-gray-200">
+      <p class="text-xs sm:text-sm text-gray-700">
         <strong>Estimated Profit:</strong> 
         {{ formatCurrency((formData.selling_price - selectedProduct.buying_price) * formData.quantity) }}
       </p>
     </div>
 
-    <div v-if="error" class="text-red-600 text-sm">
+    <div v-if="error" class="text-red-600 text-xs sm:text-sm">
       {{ error }}
     </div>
 
-    <div class="flex justify-end space-x-3">
+    <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-2 sm:pt-4">
       <button
         type="button"
         @click="$emit('cancel')"
-        class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+        class="w-full sm:w-auto px-3 sm:px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
       >
         Cancel
       </button>
       <button
         type="submit"
         :disabled="loading"
-        class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+        class="w-full sm:w-auto px-3 sm:px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition-colors"
       >
         {{ loading ? 'Saving...' : 'Save Sale' }}
       </button>
