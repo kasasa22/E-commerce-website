@@ -1,43 +1,43 @@
 <template>
   <div>
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Monthly Report</h1>
-      <div class="flex space-x-3">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Monthly Report</h1>
+      <div class="flex gap-2 sm:gap-3 w-full sm:w-auto">
         <input
           v-model="selectedMonth"
           type="month"
-          class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          class="flex-1 sm:flex-none sm:w-auto rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
           @change="fetchReport"
         />
         <button
           @click="printReport"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+          class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 whitespace-nowrap"
         >
           Print
         </button>
       </div>
     </div>
 
-    <div class="bg-white shadow sm:rounded-lg mb-6">
-      <div class="px-4 py-5 sm:p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">Summary</h2>
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
-          <div class="bg-gray-50 px-4 py-5 rounded-lg">
-            <dt class="text-sm font-medium text-gray-500">Total Sales</dt>
-            <dd class="mt-1 text-2xl font-semibold text-gray-900">
+    <div class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
+      <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Summary</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
+          <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg">
+            <dt class="text-xs sm:text-sm font-medium text-gray-500">Total Sales</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
               {{ monthlySales.length }}
             </dd>
           </div>
-          <div class="bg-gray-50 px-4 py-5 rounded-lg">
-            <dt class="text-sm font-medium text-gray-500">Total Revenue</dt>
-            <dd class="mt-1 text-2xl font-semibold text-gray-900">
+          <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg">
+            <dt class="text-xs sm:text-sm font-medium text-gray-500">Total Revenue</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
               {{ formatCurrency(totalRevenue) }}
             </dd>
           </div>
-          <div class="bg-gray-50 px-4 py-5 rounded-lg">
-            <dt class="text-sm font-medium text-gray-500">Total Profit</dt>
-            <dd class="mt-1 text-2xl font-semibold" :class="salesStore.monthlyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
-              {{ formatCurrency(salesStore.monthlyProfit) }}
+          <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg col-span-2 sm:col-span-1">
+            <dt class="text-xs sm:text-sm font-medium text-gray-500">Total Profit</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold" :class="monthlyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
+              {{ formatCurrency(monthlyProfit) }}
             </dd>
           </div>
         </div>
@@ -52,11 +52,30 @@
       <p class="text-gray-500">No sales found for this month.</p>
     </div>
 
-    <div v-else class="bg-white shadow overflow-hidden sm:rounded-md" id="report-table">
-      <Table
-        :columns="columns"
-        :data="monthlySales"
-      >
+    <div v-else>
+      <div class="mb-4">
+        <div class="relative">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search sales by product name or date..."
+            class="block w-full sm:w-80 rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-4 py-2 pl-10"
+          />
+          <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <div v-if="filteredSales.length === 0" class="text-center py-8">
+        <p class="text-gray-500">No sales match your search.</p>
+      </div>
+
+      <div v-else class="bg-white shadow overflow-hidden sm:rounded-md" id="report-table">
+        <Table
+          :columns="columns"
+          :data="filteredSales"
+        >
         <template #product_name="{ row }">
           {{ row.products?.name || '-' }}
         </template>
@@ -66,6 +85,7 @@
           </span>
         </template>
       </Table>
+      </div>
     </div>
   </div>
 </template>
@@ -79,20 +99,53 @@ import { getDefaultCurrency } from '../../utils/supabase'
 const salesStore = useSalesStore()
 const currency = getDefaultCurrency()
 const selectedMonth = ref(new Date().toISOString().slice(0, 7))
+const searchQuery = ref('')
 
 const monthlySales = computed(() => {
-  if (!selectedMonth.value) return salesStore.monthlySales
+  if (!salesStore.sales || salesStore.sales.length === 0) return []
+  if (!selectedMonth.value) return salesStore.monthlySales || []
   
   const [year, month] = selectedMonth.value.split('-')
   return salesStore.sales.filter(sale => {
+    if (!sale || !sale.sold_at) return false
     const saleDate = new Date(sale.sold_at)
     return saleDate.getFullYear() === parseInt(year) && 
            saleDate.getMonth() === parseInt(month) - 1
   })
 })
 
+const filteredSales = computed(() => {
+  if (!monthlySales.value || monthlySales.value.length === 0) return []
+  if (!searchQuery.value.trim()) {
+    return monthlySales.value
+  }
+  const query = searchQuery.value.toLowerCase().trim()
+  return monthlySales.value.filter(sale => {
+    if (!sale) return false
+    const productName = sale.products?.name?.toLowerCase() || ''
+    const saleDate = sale.sold_at ? new Date(sale.sold_at).toLocaleString().toLowerCase() : ''
+    const quantity = sale.quantity ? sale.quantity.toString() : ''
+    const price = sale.selling_price ? sale.selling_price.toString() : ''
+    return productName.includes(query) ||
+           saleDate.includes(query) ||
+           quantity.includes(query) ||
+           price.includes(query)
+  })
+})
+
 const totalRevenue = computed(() => {
-  return monthlySales.value.reduce((sum, sale) => sum + (sale.selling_price * sale.quantity), 0)
+  if (!monthlySales.value || monthlySales.value.length === 0) return 0
+  return monthlySales.value.reduce((sum, sale) => {
+    if (!sale || !sale.selling_price || !sale.quantity) return sum
+    return sum + (sale.selling_price * sale.quantity)
+  }, 0)
+})
+
+const monthlyProfit = computed(() => {
+  if (!monthlySales.value || monthlySales.value.length === 0) return 0
+  return monthlySales.value.reduce((sum, sale) => {
+    return sum + (sale.profit || 0)
+  }, 0)
 })
 
 const columns = [
