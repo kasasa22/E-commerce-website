@@ -61,10 +61,7 @@ export const useSalesStore = defineStore('sales', () => {
           *,
           products (
             id,
-            name,
-            brand,
-            type,
-            category
+            name
           )
         `)
         .order('sold_at', { ascending: false })
@@ -109,20 +106,19 @@ export const useSalesStore = defineStore('sales', () => {
           *,
           products (
             id,
-            name,
-            brand,
-            type,
-            category
+            name
           )
         `)
         .single()
 
       if (createError) throw createError
 
-      await supabase
+      const { error: updateError } = await supabase
         .from('products')
         .update({ quantity: product.quantity - saleData.quantity })
         .eq('id', saleData.product_id)
+
+      if (updateError) throw updateError
 
       sales.value.unshift(data)
       await productStore.fetchProducts()
@@ -146,10 +142,7 @@ export const useSalesStore = defineStore('sales', () => {
           *,
           products (
             id,
-            name,
-            brand,
-            type,
-            category
+            name
           )
         `)
         .gte('sold_at', startDate)
