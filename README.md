@@ -33,9 +33,9 @@ Create a `.env` file in the project root:
 
 ```env
 VITE_APP_NAME="My E-commerce System"
-VITE_SUPABASE_URL="https://your-project.supabase.co"
-VITE_SUPABASE_ANON_KEY="your-anon-key"
-VITE_SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_ANON_KEY="your-anon-key"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
 VITE_DEFAULT_CURRENCY="UGX"
 ```
 
@@ -134,9 +134,9 @@ The built files will be in the `dist` directory.
 ## Environment Variables
 
 - `VITE_APP_NAME`: Display name for the application (shown in UI)
-- `VITE_SUPABASE_URL`: Your Supabase project URL
-- `VITE_SUPABASE_ANON_KEY`: Supabase anonymous/public key
-- `VITE_SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key (optional, for admin tasks)
+- `SUPABASE_URL`: Your Supabase project URL
+- `SUPABASE_ANON_KEY`: Supabase anonymous/public key
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase service role key (optional, for admin tasks)
 - `VITE_DEFAULT_CURRENCY`: Default currency code (e.g., "UGX", "USD")
 
 ## License
