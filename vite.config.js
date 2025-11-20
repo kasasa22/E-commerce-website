@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => {
     define: {
       'import.meta.env.SUPABASE_URL': JSON.stringify(env.SUPABASE_URL || ''),
       'import.meta.env.SUPABASE_ANON_KEY': JSON.stringify(env.SUPABASE_ANON_KEY || ''),
+      'import.meta.env.SUPABASE_SERVICE_ROLE_KEY': JSON.stringify(env.SUPABASE_SERVICE_ROLE_KEY || ''),
+      'import.meta.env.VITE_APP_NAME': JSON.stringify(env.VITE_APP_NAME || 'E-commerce System'),
+      'import.meta.env.VITE_DEFAULT_CURRENCY': JSON.stringify(env.VITE_DEFAULT_CURRENCY || 'UGX'),
     },
   }
 })
