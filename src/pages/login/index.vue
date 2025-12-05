@@ -3,7 +3,7 @@
     <div class="login-card">
       <div class="login-header">
         <h2 class="login-title">Sign in to {{ appName }}</h2>
-        <p class="login-subtitle">Enter your credentials</p>
+        <p class="login-subtitle">Enter your credentials to access your account</p>
       </div>
       
       <form class="login-form" @submit.prevent="handleLogin">
