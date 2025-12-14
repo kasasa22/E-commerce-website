@@ -102,16 +102,16 @@
       </div>
     </div>
 
-    <div v-if="showCreateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-2 sm:p-4 md:p-6">
-      <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
-        <div class="p-4 sm:p-5 md:p-6 lg:p-7">
-          <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-6">
-            <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-900">New Sale</h3>
+    <div v-if="showCreateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center p-2 sm:p-4 md:p-8 lg:p-6">
+      <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-full max-w-sm sm:max-w-md md:max-w-xl lg:max-w-2xl md:mx-auto">
+        <div class="p-4 sm:p-5 md:p-8 lg:p-7">
+          <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-8">
+            <h3 class="text-base sm:text-lg md:text-2xl font-medium text-gray-900">New Sale</h3>
             <button
               @click="showCreateModal = false"
-              class="text-gray-400 hover:text-gray-500 transition-colors"
+              class="text-gray-400 hover:text-gray-500 transition-colors p-1 md:p-2 rounded-full hover:bg-gray-100"
             >
-              <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
