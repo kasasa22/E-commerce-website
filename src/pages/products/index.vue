@@ -108,9 +108,8 @@
       </div>
     </div>
 
-    <div v-if="showCreateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 overflow-y-auto">
-      <div class="min-h-full flex items-center justify-center p-2 sm:p-4 md:p-6">
-        <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-full max-w-sm sm:max-w-md md:max-w-xl lg:max-w-2xl">
+    <div v-if="showCreateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6">
+      <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-full max-w-sm sm:max-w-md md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto">
         <div class="p-4 sm:p-5 md:p-8 lg:p-7">
           <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-8">
             <h3 class="text-base sm:text-lg md:text-2xl font-medium text-gray-900">Add New Product</h3>
@@ -130,13 +129,11 @@
             @cancel="showCreateModal = false"
           />
         </div>
-        </div>
       </div>
     </div>
 
-    <div v-if="showEditModal && editingProduct" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 overflow-y-auto">
-      <div class="min-h-full flex items-center justify-center p-2 sm:p-4 md:p-6">
-        <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-full max-w-sm sm:max-w-md md:max-w-xl lg:max-w-2xl">
+    <div v-if="showEditModal && editingProduct" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6">
+      <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-full max-w-sm sm:max-w-md md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto">
         <div class="p-4 sm:p-5 md:p-8 lg:p-7">
           <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-8">
             <h3 class="text-base sm:text-lg md:text-2xl font-medium text-gray-900">Edit Product</h3>
@@ -156,7 +153,6 @@
             @submit="handleUpdate"
             @cancel="showEditModal = false"
           />
-        </div>
         </div>
       </div>
     </div>
