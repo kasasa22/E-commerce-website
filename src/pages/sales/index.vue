@@ -103,11 +103,11 @@
     </div>
 
     <Teleport to="body">
-      <div v-if="showCreateModal" class="fixed top-0 left-0 w-screen h-screen bg-gray-600 bg-opacity-50 z-[9999] flex items-center justify-center p-2 sm:p-4 md:p-6">
-        <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-full max-w-sm sm:max-w-md md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto">
-          <div class="p-4 sm:p-5 md:p-8 lg:p-7">
-            <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-8">
-              <h3 class="text-base sm:text-lg md:text-2xl font-medium text-gray-900">New Sale</h3>
+      <div v-if="showCreateModal" class="fixed top-0 left-0 w-screen h-screen bg-gray-600 bg-opacity-50 z-[9999] flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-[90%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg max-h-[85vh] overflow-y-auto">
+          <div class="p-4 sm:p-5 md:p-6">
+            <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-6">
+              <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-900">New Sale</h3>
               <button
                 @click="showCreateModal = false"
                 class="text-gray-400 hover:text-gray-500 transition-colors p-1 md:p-2 rounded-full hover:bg-gray-100"
