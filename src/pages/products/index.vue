@@ -45,7 +45,7 @@
       <div class="hidden md:block">
       <Table
         :columns="columns"
-        :data="filteredProducts"
+        :data="paginatedProducts"
       >
         <template #actions="{ row }">
           <div class="flex space-x-2">
@@ -70,7 +70,7 @@
 
       <div class="md:hidden p-4 space-y-4">
         <div
-          v-for="product in filteredProducts"
+          v-for="product in paginatedProducts"
           :key="product.id"
           class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm"
         >
@@ -107,6 +107,13 @@
           </div>
         </div>
       </div>
+      
+      <Pagination
+        :current-page="currentPage"
+        :total-items="filteredProducts.length"
+        :items-per-page="itemsPerPage"
+        @page-change="goToPage"
+      />
     </div>
 
     <Teleport to="body">
@@ -165,11 +172,12 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useProductStore } from '../../stores/productStore'
 import { useUserStore } from '../../stores/userStore'
 import Table from '../../components/Table.vue'
 import ProductForm from '../../components/ProductForm.vue'
+import Pagination from '../../components/Pagination.vue'
 import { getDefaultCurrency } from '../../utils/supabase'
 
 const productStore = useProductStore()
@@ -178,17 +186,43 @@ const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const editingProduct = ref(null)
 const searchQuery = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 10
 
 const filteredProducts = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return productStore.products
+  let products = productStore.products
+  
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim()
+    products = productStore.products.filter(product => 
+      product.name.toLowerCase().includes(query) ||
+      product.quantity.toString().includes(query) ||
+      (userStore.isAdmin && product.buying_price.toString().includes(query))
+    )
   }
-  const query = searchQuery.value.toLowerCase().trim()
-  return productStore.products.filter(product => 
-    product.name.toLowerCase().includes(query) ||
-    product.quantity.toString().includes(query) ||
-    (userStore.isAdmin && product.buying_price.toString().includes(query))
-  )
+  
+  return products
+})
+
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredProducts.value.slice(start, end)
+})
+
+const totalPages = computed(() => Math.ceil(filteredProducts.value.length / itemsPerPage))
+
+function goToPage(page) {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+    // Scroll to top of table
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
+// Reset to page 1 when search query changes
+watch(searchQuery, () => {
+  currentPage.value = 1
 })
 
 const currency = getDefaultCurrency()

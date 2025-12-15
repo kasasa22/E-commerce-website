@@ -47,13 +47,30 @@ export const useUserStore = defineStore('user', () => {
   async function signOut() {
     loading.value = true
     try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
+      // Check if there's an active session before trying to sign out
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      
+      if (currentSession) {
+        const { error } = await supabase.auth.signOut()
+        if (error && !error.message?.includes('Auth session missing')) {
+          // Only log non-session-missing errors
+          console.error('Sign out error:', error)
+        }
+      }
+      
+      // Always clear local state regardless of session status
       user.value = null
       session.value = null
       return { error: null }
     } catch (error) {
-      return { error: error.message }
+      // Clear state even on exception
+      user.value = null
+      session.value = null
+      // Don't log "Auth session missing" errors as they're expected
+      if (!error.message?.includes('Auth session missing')) {
+        console.error('Sign out exception:', error)
+      }
+      return { error: null } // Return success since we cleared local state
     } finally {
       loading.value = false
     }

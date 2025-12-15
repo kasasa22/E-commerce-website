@@ -44,7 +44,7 @@
       <div class="hidden md:block">
         <Table
           :columns="columns"
-          :data="filteredSales"
+          :data="paginatedSales"
         >
           <template #product_name="{ row }">
             {{ row.products?.name || '-' }}
@@ -59,7 +59,7 @@
 
       <div class="md:hidden p-4 space-y-4">
         <div
-          v-for="sale in filteredSales"
+          v-for="sale in paginatedSales"
           :key="sale.id"
           class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm"
         >
@@ -100,6 +100,13 @@
           </div>
         </div>
       </div>
+      
+      <Pagination
+        :current-page="currentPage"
+        :total-items="filteredSales.length"
+        :items-per-page="itemsPerPage"
+        @page-change="goToPage"
+      />
     </div>
 
     <Teleport to="body">
@@ -131,12 +138,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useSalesStore } from '../../stores/salesStore'
 import { useProductStore } from '../../stores/productStore'
 import { useUserStore } from '../../stores/userStore'
 import Table from '../../components/Table.vue'
 import SalesForm from '../../components/SalesForm.vue'
+import Pagination from '../../components/Pagination.vue'
 import { getDefaultCurrency } from '../../utils/supabase'
 
 const salesStore = useSalesStore()
@@ -145,22 +153,48 @@ const userStore = useUserStore()
 const currency = getDefaultCurrency()
 const showCreateModal = ref(false)
 const searchQuery = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 10
 
 const filteredSales = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return salesStore.sales
+  let sales = salesStore.sales
+  
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim()
+    sales = salesStore.sales.filter(sale => {
+      const productName = sale.products?.name?.toLowerCase() || ''
+      const saleDate = new Date(sale.sold_at).toLocaleString().toLowerCase()
+      const quantity = sale.quantity.toString()
+      const price = sale.selling_price.toString()
+      return productName.includes(query) ||
+             saleDate.includes(query) ||
+             quantity.includes(query) ||
+             price.includes(query)
+    })
   }
-  const query = searchQuery.value.toLowerCase().trim()
-  return salesStore.sales.filter(sale => {
-    const productName = sale.products?.name?.toLowerCase() || ''
-    const saleDate = new Date(sale.sold_at).toLocaleString().toLowerCase()
-    const quantity = sale.quantity.toString()
-    const price = sale.selling_price.toString()
-    return productName.includes(query) ||
-           saleDate.includes(query) ||
-           quantity.includes(query) ||
-           price.includes(query)
-  })
+  
+  return sales
+})
+
+const paginatedSales = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredSales.value.slice(start, end)
+})
+
+const totalPages = computed(() => Math.ceil(filteredSales.value.length / itemsPerPage))
+
+function goToPage(page) {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+    // Scroll to top of table
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
+// Reset to page 1 when search query changes
+watch(searchQuery, () => {
+  currentPage.value = 1
 })
 
 const columns = computed(() => {

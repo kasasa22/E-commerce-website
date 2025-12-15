@@ -236,8 +236,16 @@ function handleNavClick() {
 }
 
 async function handleSignOut() {
-  await userStore.signOut()
-  router.push({ name: 'login' })
+  try {
+    await userStore.signOut()
+    // Always redirect to login page, even if signOut had an error
+    // The signOut function will clear local state regardless
+    router.push({ name: 'login' })
+  } catch (error) {
+    console.error('Sign out error:', error)
+    // Ensure we redirect even if there's an unexpected error
+    router.push({ name: 'login' })
+  }
 }
 </script>
 

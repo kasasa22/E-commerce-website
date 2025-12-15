@@ -4,15 +4,21 @@ const supabaseUrl = import.meta.env.SUPABASE_URL || 'https://placeholder.supabas
 const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || 'placeholder-key'
 const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    storageKey: 'sb-auth-token'
+  }
+})
 
 // Admin client for server-side operations (requires service role key)
 // Note: In production, this should be done via Supabase Edge Functions
+// Using a different storage key to avoid multiple client instance warnings
 export const supabaseAdmin = supabaseServiceKey
   ? createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
-        persistSession: false
+        persistSession: false,
+        storageKey: 'sb-admin-auth-token'
       }
     })
   : null
