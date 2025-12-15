@@ -81,10 +81,10 @@ CREATE POLICY "Anyone authenticated can view products"
   ON public.products FOR SELECT
   USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Sellers, Admins, and Superadmins can create products"
+CREATE POLICY "Admins and Superadmins can create products"
   ON public.products FOR INSERT
   WITH CHECK (
-    public.get_user_role(auth.uid()) IN ('seller', 'admin', 'superadmin')
+    public.get_user_role(auth.uid()) IN ('admin', 'superadmin')
   );
 
 CREATE POLICY "Admins and Superadmins can update products"

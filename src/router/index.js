@@ -31,7 +31,7 @@ const router = createRouter({
           path: 'products/create',
           name: 'products-create',
           component: () => import('../pages/products/create.vue'),
-          meta: { roles: ['superadmin', 'admin', 'seller'] },
+          meta: { roles: ['superadmin', 'admin'] },
         },
         {
           path: 'sales',

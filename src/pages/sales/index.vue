@@ -49,7 +49,7 @@
           <template #product_name="{ row }">
             {{ row.products?.name || '-' }}
           </template>
-          <template #profit="{ row }">
+          <template v-if="userStore.isAdmin" #profit="{ row }">
             <span :class="row.profit >= 0 ? 'text-green-600' : 'text-red-600'">
               {{ formatCurrency(row.profit) }}
             </span>
@@ -90,7 +90,7 @@
                   {{ formatCurrency(sale.selling_price * sale.quantity) }}
                 </p>
               </div>
-              <div>
+              <div v-if="userStore.isAdmin">
                 <p class="text-xs text-gray-500">Profit/Loss</p>
                 <p class="text-sm font-medium" :class="sale.profit >= 0 ? 'text-green-600' : 'text-red-600'">
                   {{ formatCurrency(sale.profit) }}
@@ -134,12 +134,14 @@
 import { onMounted, ref, computed } from 'vue'
 import { useSalesStore } from '../../stores/salesStore'
 import { useProductStore } from '../../stores/productStore'
+import { useUserStore } from '../../stores/userStore'
 import Table from '../../components/Table.vue'
 import SalesForm from '../../components/SalesForm.vue'
 import { getDefaultCurrency } from '../../utils/supabase'
 
 const salesStore = useSalesStore()
 const productStore = useProductStore()
+const userStore = useUserStore()
 const currency = getDefaultCurrency()
 const showCreateModal = ref(false)
 const searchQuery = ref('')
@@ -161,13 +163,22 @@ const filteredSales = computed(() => {
   })
 })
 
-const columns = [
-  { key: 'product_name', label: 'Product' },
-  { key: 'quantity', label: 'Quantity' },
-  { key: 'selling_price', label: 'Selling Price', type: 'currency' },
-  { key: 'profit', label: 'Profit/Loss' },
-  { key: 'sold_at', label: 'Date', type: 'datetime' },
-]
+const columns = computed(() => {
+  const baseColumns = [
+    { key: 'product_name', label: 'Product' },
+    { key: 'quantity', label: 'Quantity' },
+    { key: 'selling_price', label: 'Selling Price', type: 'currency' },
+  ]
+  
+  // Only show profit column for admins
+  if (userStore.isAdmin) {
+    baseColumns.push({ key: 'profit', label: 'Profit/Loss' })
+  }
+  
+  baseColumns.push({ key: 'sold_at', label: 'Date', type: 'datetime' })
+  
+  return baseColumns
+})
 
 onMounted(() => {
   salesStore.fetchSales()
@@ -178,6 +189,7 @@ async function handleCreate(saleData) {
   const { error } = await salesStore.createSale(saleData)
   if (!error) {
     showCreateModal.value = false
+    await productStore.fetchProducts()
   }
 }
 

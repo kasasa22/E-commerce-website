@@ -3,6 +3,7 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <h1 class="text-2xl font-bold text-gray-900">Products</h1>
       <button
+        v-if="userStore.isAdmin"
         @click="showCreateModal = true"
         class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
       >
@@ -44,7 +45,7 @@
       <div class="hidden md:block">
       <Table
         :columns="columns"
-          :data="filteredProducts"
+        :data="filteredProducts"
       >
         <template #actions="{ row }">
           <div class="flex space-x-2">
@@ -83,7 +84,7 @@
                 <p class="text-xs text-gray-500">Quantity</p>
                 <p class="text-sm font-medium text-gray-900">{{ product.quantity }}</p>
               </div>
-              <div>
+              <div v-if="userStore.isAdmin">
                 <p class="text-xs text-gray-500">Price</p>
                 <p class="text-sm font-medium text-gray-900">{{ formatCurrency(product.buying_price) }}</p>
               </div>
@@ -186,18 +187,27 @@ const filteredProducts = computed(() => {
   return productStore.products.filter(product => 
     product.name.toLowerCase().includes(query) ||
     product.quantity.toString().includes(query) ||
-    product.buying_price.toString().includes(query)
+    (userStore.isAdmin && product.buying_price.toString().includes(query))
   )
 })
 
 const currency = getDefaultCurrency()
 
-const columns = [
-  { key: 'name', label: 'Name' },
-  { key: 'quantity', label: 'Quantity' },
-  { key: 'buying_price', label: 'Price', type: 'currency' },
-  { key: 'actions', label: 'Actions' },
-]
+const columns = computed(() => {
+  const baseColumns = [
+    { key: 'name', label: 'Name' },
+    { key: 'quantity', label: 'Quantity' },
+  ]
+  
+  // Only show buying_price for admins
+  if (userStore.isAdmin) {
+    baseColumns.push({ key: 'buying_price', label: 'Price', type: 'currency' })
+  }
+  
+  baseColumns.push({ key: 'actions', label: 'Actions' })
+  
+  return baseColumns
+})
 
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', {

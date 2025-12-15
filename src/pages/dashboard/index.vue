@@ -108,7 +108,7 @@
                   <p class="text-sm font-medium text-gray-900">
                     {{ formatCurrency(sale.selling_price * sale.quantity) }}
                   </p>
-                  <p class="text-xs" :class="sale.profit >= 0 ? 'text-green-600' : 'text-red-600'">
+                  <p v-if="userStore.isAdmin" class="text-xs" :class="sale.profit >= 0 ? 'text-green-600' : 'text-red-600'">
                     {{ formatCurrency(sale.profit) }}
                   </p>
                 </div>
