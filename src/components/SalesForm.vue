@@ -32,11 +32,11 @@
         min="0.01"
         step="0.01"
         required
-        :max="selectedProduct?.quantity || 0"
+        :max="maxQuantity"
         class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
       />
       <p v-if="selectedProduct" class="mt-1 text-xs text-gray-500">
-        Available: {{ selectedProduct.quantity }} {{ selectedProduct.quantity > 1 ? 'units' : 'unit' }}
+        Available: {{ maxQuantity }} {{ maxQuantity > 1 ? 'units' : 'unit' }}
       </p>
     </div>
 
@@ -112,6 +112,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  initialData: {
+    type: Object,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['submit', 'cancel'])
@@ -125,13 +129,49 @@ const formData = ref({
   sold_at: new Date().toISOString().slice(0, 16),
 })
 
+// Initialize form data when initialData changes
+watch(() => props.initialData, (newData) => {
+  if (newData) {
+    formData.value = {
+      product_id: newData.product_id,
+      quantity: newData.quantity,
+      selling_price: newData.selling_price,
+      sold_at: new Date(newData.sold_at).toISOString().slice(0, 16),
+    }
+  } else {
+    formData.value = {
+      product_id: '',
+      quantity: 0,
+      selling_price: 0,
+      sold_at: new Date().toISOString().slice(0, 16),
+    }
+  }
+}, { immediate: true })
+
 const availableProducts = computed(() => {
-  return productStore.products.filter(p => p.quantity > 0)
+  return productStore.products.filter(p => {
+    // Show product if it has stock OR if it's the product currently being edited
+    return p.quantity > 0 || (props.initialData && p.id === props.initialData.product_id)
+  })
 })
 
 const selectedProduct = computed(() => {
   if (!formData.value.product_id) return null
   return productStore.products.find(p => p.id === formData.value.product_id)
+})
+
+const maxQuantity = computed(() => {
+  if (!selectedProduct.value) return 0
+  
+  let available = selectedProduct.value.quantity
+  
+  // If we are editing and the selected product is the same as the original sale's product,
+  // add the original quantity back to the available amount
+  if (props.initialData && props.initialData.product_id === selectedProduct.value.id) {
+    available += props.initialData.quantity
+  }
+  
+  return available
 })
 
 function formatCurrency(value) {
