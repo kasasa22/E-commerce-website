@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  
+
   return {
     plugins: [vue()],
     define: {
@@ -12,6 +12,9 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.SUPABASE_SERVICE_ROLE_KEY': JSON.stringify(env.SUPABASE_SERVICE_ROLE_KEY || ''),
       'import.meta.env.VITE_APP_NAME': JSON.stringify(env.VITE_APP_NAME || 'E-commerce System'),
       'import.meta.env.VITE_DEFAULT_CURRENCY': JSON.stringify(env.VITE_DEFAULT_CURRENCY || 'UGX'),
+    },
+    build: {
+      target: 'es2015',
     },
   }
 })
