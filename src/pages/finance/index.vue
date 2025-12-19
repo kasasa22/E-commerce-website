@@ -114,63 +114,64 @@
         </button>
       </div>
 
-      <!-- Desktop Table View -->
-      <div v-else class="hidden md:block overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="item in currentData" :key="item.id" class="hover:bg-gray-50 transition-colors">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">{{ item.name }}</div>
-                <div class="text-xs text-gray-500 truncate max-w-xs">{{ item.description || 'No description' }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-500">{{ formatCurrency(item.total_amount) }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-semibold text-gray-900">{{ formatCurrency(item.remaining_amount) }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-500">{{ formatDate(item.due_date) }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span
-                  :class="[
-                    item.status === 'paid' ? 'bg-green-100 text-green-800' : 
-                    item.status === 'partial' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800',
-                    'px-2.5 py-0.5 rounded-full text-xs font-medium capitalize'
-                  ]"
-                >
-                  {{ item.status }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <router-link
-                  :to="{ name: 'finance-details', params: { type: activeTab === 'debtors' ? 'debtor' : 'creditor', id: item.id } }"
-                  class="inline-flex items-center px-3 py-1.5 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-                >
-                  View Details
-                  <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </router-link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <div v-else>
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="item in currentData" :key="item.id" class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">{{ item.name }}</div>
+                  <div class="text-xs text-gray-500 truncate max-w-xs">{{ item.description || 'No description' }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ formatCurrency(item.total_amount) }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-semibold text-gray-900">{{ formatCurrency(item.remaining_amount) }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-500">{{ formatDate(item.due_date) }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span
+                    :class="[
+                      item.status === 'paid' ? 'bg-green-100 text-green-800' : 
+                      item.status === 'partial' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800',
+                      'px-2.5 py-0.5 rounded-full text-xs font-medium capitalize'
+                    ]"
+                  >
+                    {{ item.status }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <router-link
+                    :to="{ name: 'finance-details', params: { type: activeTab === 'debtors' ? 'debtor' : 'creditor', id: item.id } }"
+                    class="inline-flex items-center px-3 py-1.5 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                  >
+                    View Details
+                    <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </router-link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <!-- Mobile Card View -->
-      <div v-else class="md:hidden divide-y divide-gray-200">
+        <!-- Mobile Card View -->
+        <div class="md:hidden divide-y divide-gray-200">
         <div v-for="item in currentData" :key="item.id" class="p-4 space-y-3">
           <div class="flex justify-between items-start">
             <div>
@@ -206,6 +207,7 @@
         </div>
       </div>
     </div>
+  </div>
 
     <!-- Add Modal -->
     <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto">
