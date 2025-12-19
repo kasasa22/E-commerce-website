@@ -216,41 +216,41 @@
           <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <h3 class="text-lg leading-6 font-bold text-gray-900 mb-6">
               Add New {{ activeTab.slice(0, -1) }}
             </h3>
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700">Name</label>
-                <input v-model="form.name" type="text" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Enter name" />
+                <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input v-model="form.name" type="text" class="block w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" placeholder="Enter name" />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Total Amount</label>
-                <div class="mt-1 relative rounded-md shadow-sm">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
+                <div class="relative rounded-md shadow-sm">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <span class="text-gray-500 sm:text-sm">{{ currencySymbol }}</span>
                   </div>
-                  <input v-model.number="form.total_amount" type="number" class="block w-full pl-12 border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="0.00" />
+                  <input v-model.number="form.total_amount" type="number" class="block w-full pl-12 border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" placeholder="0.00" />
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea v-model="form.description" rows="3" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Optional description"></textarea>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea v-model="form.description" rows="3" class="block w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" placeholder="Optional description"></textarea>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700">Due Date</label>
-                <input v-model="form.due_date" type="date" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+                <input v-model="form.due_date" type="date" class="block w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" />
               </div>
             </div>
           </div>
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-3">
-            <button @click="saveEntry" :disabled="saving" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 transition-colors">
+            <button @click="saveEntry" :disabled="saving" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 transition-colors">
               <span v-if="saving" class="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
               Save
             </button>
-            <button @click="closeModal" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+            <button @click="closeModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
               Cancel
             </button>
           </div>
