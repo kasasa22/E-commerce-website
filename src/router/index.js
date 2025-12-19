@@ -95,7 +95,17 @@ router.beforeEach(async (to, from, next) => {
     const userStore = useUserStore()
 
     if (!userStore.isAuthenticated) {
-      await userStore.checkAuth()
+      // Add a timeout to auth check to prevent hanging on slow mobile networks
+      const authPromise = userStore.checkAuth()
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Auth timeout')), 5000)
+      )
+
+      try {
+        await Promise.race([authPromise, timeoutPromise])
+      } catch (e) {
+        console.warn('Auth check timed out or failed, proceeding anyway:', e)
+      }
     }
 
     if (to.meta.requiresAuth === false) {

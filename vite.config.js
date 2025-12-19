@@ -15,6 +15,20 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: 'es2015',
+      minify: 'esbuild',
+      cssCodeSplit: true,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('@supabase')) return 'supabase';
+              if (id.includes('vue') || id.includes('pinia')) return 'vendor-core';
+              return 'vendor';
+            }
+          }
+        }
+      },
+      chunkSizeWarningLimit: 600,
     },
   }
 })
