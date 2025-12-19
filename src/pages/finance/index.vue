@@ -47,43 +47,43 @@
     </div>
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
+      <div class="bg-white p-3 sm:p-6 rounded-xl shadow-sm border border-gray-100">
         <div class="flex items-center">
-          <div class="p-3 rounded-lg bg-red-50 text-red-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex-shrink-0 p-2 sm:p-3 rounded-lg bg-red-50 text-red-600">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Total Debtors (Remaining)</p>
-            <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(totalDebtorsRemaining) }}</p>
+          <div class="ml-2 sm:ml-4 min-w-0 flex-1">
+            <p class="text-[10px] sm:text-sm font-medium text-gray-500 truncate">Total Debtors</p>
+            <p class="text-sm sm:text-2xl font-bold text-gray-900 truncate">{{ formatCurrency(totalDebtorsRemaining) }}</p>
           </div>
         </div>
       </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <div class="bg-white p-3 sm:p-6 rounded-xl shadow-sm border border-gray-100">
         <div class="flex items-center">
-          <div class="p-3 rounded-lg bg-green-50 text-green-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex-shrink-0 p-2 sm:p-3 rounded-lg bg-green-50 text-green-600">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
             </svg>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Total Creditors (Remaining)</p>
-            <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(totalCreditorsRemaining) }}</p>
+          <div class="ml-2 sm:ml-4 min-w-0 flex-1">
+            <p class="text-[10px] sm:text-sm font-medium text-gray-500 truncate">Total Creditors</p>
+            <p class="text-sm sm:text-2xl font-bold text-gray-900 truncate">{{ formatCurrency(totalCreditorsRemaining) }}</p>
           </div>
         </div>
       </div>
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <div class="bg-white p-3 sm:p-6 rounded-xl shadow-sm border border-gray-100 col-span-2 md:col-span-1">
         <div class="flex items-center">
-          <div class="p-3 rounded-lg bg-blue-50 text-blue-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex-shrink-0 p-2 sm:p-3 rounded-lg bg-blue-50 text-blue-600">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
           </div>
-          <div class="ml-4">
-            <p class="text-sm font-medium text-gray-500">Net Balance</p>
-            <p class="text-2xl font-bold text-gray-900" :class="netBalance >= 0 ? 'text-green-600' : 'text-red-600'">
+          <div class="ml-2 sm:ml-4 min-w-0 flex-1">
+            <p class="text-[10px] sm:text-sm font-medium text-gray-500 truncate">Net Balance</p>
+            <p class="text-sm sm:text-2xl font-bold text-gray-900 truncate" :class="netBalance >= 0 ? 'text-green-600' : 'text-red-600'">
               {{ formatCurrency(netBalance) }}
             </p>
           </div>
