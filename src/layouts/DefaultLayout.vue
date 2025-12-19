@@ -130,9 +130,26 @@
 
             <router-link
               v-if="userStore.isAdmin"
-              :to="{ name: 'users' }"
+              :to="{ name: 'finance' }"
               @click="handleNavClick"
               class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-4"
+              :class="
+                $route.name === 'finance'
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-700 hover:bg-gray-100'
+              "
+            >
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Finance
+            </router-link>
+
+            <router-link
+              v-if="userStore.isAdmin"
+              :to="{ name: 'users' }"
+              @click="handleNavClick"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1"
               :class="
                 $route.name === 'users'
                   ? 'bg-blue-50 text-blue-700'

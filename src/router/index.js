@@ -69,6 +69,18 @@ const router = createRouter({
           component: () => import('../pages/users/index.vue'),
           meta: { roles: ['superadmin', 'admin'] },
         },
+        {
+          path: 'finance',
+          name: 'finance',
+          component: () => import('../pages/finance/index.vue'),
+          meta: { roles: ['superadmin', 'admin'] },
+        },
+        {
+          path: 'finance/:type/:id',
+          name: 'finance-details',
+          component: () => import('../pages/finance/details.vue'),
+          meta: { roles: ['superadmin', 'admin'] },
+        },
       ],
     },
     {
