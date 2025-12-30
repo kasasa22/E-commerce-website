@@ -445,7 +445,6 @@ function openEditDepositModal(deposit) {
   depositForm.value = {
     id: deposit.id,
     bank_id: deposit.bank_id,
-    bank_name: deposit.banks?.name || '',
     amount: deposit.amount,
     agent_name: deposit.agent_name,
     deposit_date: deposit.deposit_date
