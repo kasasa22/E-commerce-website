@@ -129,10 +129,42 @@
             </div>
 
             <router-link
+              :to="{ name: 'expenses' }"
+              @click="handleNavClick"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-4"
+              :class="
+                $route.name === 'expenses'
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-700 hover:bg-gray-100'
+              "
+            >
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z" />
+              </svg>
+              Expenses
+            </router-link>
+
+            <router-link
+              :to="{ name: 'banking' }"
+              @click="handleNavClick"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1"
+              :class="
+                $route.name === 'banking'
+                  ? 'bg-blue-50 text-blue-700'
+                  : 'text-gray-700 hover:bg-gray-100'
+              "
+            >
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              Banking
+            </router-link>
+
+            <router-link
               v-if="userStore.isAdmin"
               :to="{ name: 'finance' }"
               @click="handleNavClick"
-              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-4"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1"
               :class="
                 $route.name === 'finance'
                   ? 'bg-blue-50 text-blue-700'
