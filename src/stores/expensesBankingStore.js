@@ -6,6 +6,7 @@ export const useExpensesBankingStore = defineStore('expensesBanking', {
         expenses: [],
         banks: [],
         deposits: [],
+        dailyBalances: [],
         loading: false,
         error: null,
     }),
@@ -275,6 +276,74 @@ export const useExpensesBankingStore = defineStore('expensesBanking', {
 
         getBankById(id) {
             return this.banks.find(b => b.id === id)
+        },
+
+        async fetchDailyBalances() {
+            this.loading = true
+            try {
+                const { data, error } = await supabase
+                    .from('daily_balances')
+                    .select('*')
+                    .order('balance_date', { ascending: false })
+
+                if (error) throw error
+                this.dailyBalances = data
+            } catch (error) {
+                this.error = error.message
+                console.error('Error fetching daily balances:', error)
+            } finally {
+                this.loading = false
+            }
+        },
+
+        async getBalanceBD(date) {
+            const prevDate = new Date(date)
+            prevDate.setDate(prevDate.getDate() - 1)
+            const prevDateStr = prevDate.toISOString().split('T')[0]
+
+            const balance = this.dailyBalances.find(b => b.balance_date === prevDateStr)
+            return balance ? Number(balance.balance_cd) : 0
+        },
+
+        async getBalanceCD(date) {
+            const balance = this.dailyBalances.find(b => b.balance_date === date)
+            return balance ? Number(balance.balance_cd) : null
+        },
+
+        async saveBalanceCD(date, amount) {
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+                const existingBalance = this.dailyBalances.find(b => b.balance_date === date)
+
+                if (existingBalance) {
+                    const { data, error } = await supabase
+                        .from('daily_balances')
+                        .update({ balance_cd: amount })
+                        .eq('id', existingBalance.id)
+                        .select()
+
+                    if (error) throw error
+                    const index = this.dailyBalances.findIndex(b => b.id === existingBalance.id)
+                    if (index !== -1) this.dailyBalances[index] = data[0]
+                    return data[0]
+                } else {
+                    const { data, error } = await supabase
+                        .from('daily_balances')
+                        .insert([{
+                            balance_date: date,
+                            balance_cd: amount,
+                            created_by: user.id
+                        }])
+                        .select()
+
+                    if (error) throw error
+                    this.dailyBalances.unshift(data[0])
+                    return data[0]
+                }
+            } catch (error) {
+                this.error = error.message
+                throw error
+            }
         }
     }
 })
