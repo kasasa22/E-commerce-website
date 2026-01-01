@@ -83,6 +83,90 @@
         </div>
       </div>
 
+      <!-- Admin Only: Today's Cash Flow Summary -->
+      <div v-if="userStore.isAdmin" class="bg-white shadow rounded-lg">
+        <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+          <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Today's Cash Flow</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4">
+            <div class="bg-blue-50 px-3 py-3 rounded-lg border border-blue-200">
+              <dt class="text-xs font-medium text-blue-600">Opening Balance</dt>
+              <dd class="mt-1 text-lg font-semibold text-blue-700">{{ formatCurrency(balanceBD) }}</dd>
+            </div>
+            <div class="bg-green-50 px-3 py-3 rounded-lg border border-green-200">
+              <dt class="text-xs font-medium text-green-600">Total Sales</dt>
+              <dd class="mt-1 text-lg font-semibold text-green-700">{{ formatCurrency(dailySalesAmount) }}</dd>
+            </div>
+            <div class="bg-purple-50 px-3 py-3 rounded-lg border border-purple-200">
+              <dt class="text-xs font-medium text-purple-600">Debts Collected</dt>
+              <dd class="mt-1 text-lg font-semibold text-purple-700">{{ formatCurrency(dailyDebtsCollected) }}</dd>
+            </div>
+            <div class="bg-red-50 px-3 py-3 rounded-lg border border-red-200">
+              <dt class="text-xs font-medium text-red-600">Expenses</dt>
+              <dd class="mt-1 text-lg font-semibold text-red-700">{{ formatCurrency(dailyExpenses) }}</dd>
+            </div>
+            <div class="bg-orange-50 px-3 py-3 rounded-lg border border-orange-200">
+              <dt class="text-xs font-medium text-orange-600">Creditors Paid</dt>
+              <dd class="mt-1 text-lg font-semibold text-orange-700">{{ formatCurrency(dailyCreditorsPaid) }}</dd>
+            </div>
+            <div class="bg-cyan-50 px-3 py-3 rounded-lg border border-cyan-200">
+              <dt class="text-xs font-medium text-cyan-600">Bank Deposits</dt>
+              <dd class="mt-1 text-lg font-semibold text-cyan-700">{{ formatCurrency(dailyBankDeposits) }}</dd>
+            </div>
+            <div class="bg-yellow-50 px-3 py-3 rounded-lg border border-yellow-200">
+              <dt class="text-xs font-medium text-yellow-600">New Debts</dt>
+              <dd class="mt-1 text-lg font-semibold text-yellow-700">{{ formatCurrency(dailyNewDebts) }}</dd>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-200">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="bg-indigo-50 px-4 py-4 rounded-lg border border-indigo-200">
+                <dt class="text-sm font-medium text-indigo-600">Expected Cash</dt>
+                <dd class="mt-1 text-xl font-bold text-indigo-700">{{ formatCurrency(expectedCash) }}</dd>
+              </div>
+              <div class="bg-teal-50 px-4 py-4 rounded-lg border border-teal-200">
+                <dt class="text-sm font-medium text-teal-600">Closing Balance</dt>
+                <dd class="mt-1 text-xl font-bold text-teal-700">
+                  {{ balanceCDSaved !== null ? formatCurrency(balanceCDSaved) : 'Not set' }}
+                </dd>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Only: Spending Breakdown Pie Chart -->
+      <div v-if="userStore.isAdmin && spendingData.length > 0" class="bg-white shadow rounded-lg">
+        <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+          <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Today's Spending Breakdown</h3>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="flex justify-center">
+              <div class="w-64 h-64">
+                <PieChart
+                  :data="spendingData"
+                  :size="250"
+                  :donut="true"
+                  :showLegend="false"
+                  :formatValue="formatCurrency"
+                />
+              </div>
+            </div>
+            <div class="space-y-3">
+              <div v-for="(item, index) in spendingData" :key="index" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center gap-3">
+                  <span class="w-4 h-4 rounded-full" :style="{ backgroundColor: item.color }"></span>
+                  <span class="font-medium text-gray-700">{{ item.label }}</span>
+                </div>
+                <span class="font-bold text-gray-900">{{ formatCurrency(item.value) }}</span>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-gray-100 rounded-lg border-2 border-gray-300">
+                <span class="font-bold text-gray-700">Total Spending</span>
+                <span class="font-bold text-gray-900">{{ formatCurrency(totalSpending) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <div class="bg-white shadow rounded-lg">
           <div class="px-4 py-5 sm:p-6">
@@ -141,9 +225,102 @@
         </div>
       </div>
 
+      <!-- Admin Only: Finance Overview -->
+      <div v-if="userStore.isAdmin" class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Today's Expenses</h3>
+            <div v-if="dailyExpensesList.length === 0" class="text-sm text-gray-500">
+              No expenses today
+            </div>
+            <div v-else class="space-y-3 max-h-64 overflow-y-auto">
+              <div
+                v-for="expense in dailyExpensesList"
+                :key="expense.id"
+                class="flex justify-between items-center py-2 border-b border-gray-200"
+              >
+                <p class="text-sm font-medium text-gray-900">{{ expense.title }}</p>
+                <p class="text-sm font-medium text-red-600">{{ formatCurrency(expense.amount) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Today's Bank Deposits</h3>
+            <div v-if="dailyBankDepositsList.length === 0" class="text-sm text-gray-500">
+              No bank deposits today
+            </div>
+            <div v-else class="space-y-3 max-h-64 overflow-y-auto">
+              <div
+                v-for="deposit in dailyBankDepositsList"
+                :key="deposit.id"
+                class="flex justify-between items-center py-2 border-b border-gray-200"
+              >
+                <div>
+                  <p class="text-sm font-medium text-gray-900">{{ deposit.banks?.name }}</p>
+                  <p class="text-xs text-gray-500">{{ deposit.agent_name }}</p>
+                </div>
+                <p class="text-sm font-medium text-cyan-600">{{ formatCurrency(deposit.amount) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Only: Debtors & Creditors Summary -->
+      <div v-if="userStore.isAdmin" class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-medium text-gray-900">Total Debtors Owed</h3>
+              <span class="text-xl font-bold text-red-600">{{ formatCurrency(totalDebtorsRemaining) }}</span>
+            </div>
+            <div v-if="dailyNewDebtorsList.length > 0">
+              <p class="text-sm font-medium text-gray-700 mb-2">New Debtors Today:</p>
+              <div class="space-y-2 max-h-48 overflow-y-auto">
+                <div
+                  v-for="debtor in dailyNewDebtorsList"
+                  :key="debtor.id"
+                  class="flex justify-between items-center py-2 border-b border-gray-200"
+                >
+                  <p class="text-sm text-gray-900">{{ debtor.name }}</p>
+                  <p class="text-sm font-medium text-yellow-600">{{ formatCurrency(debtor.total_amount) }}</p>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-sm text-gray-500">No new debtors today</div>
+          </div>
+        </div>
+
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-medium text-gray-900">Total Owed to Creditors</h3>
+              <span class="text-xl font-bold text-orange-600">{{ formatCurrency(totalCreditorsRemaining) }}</span>
+            </div>
+            <div v-if="dailyCreditorsPaidList.length > 0">
+              <p class="text-sm font-medium text-gray-700 mb-2">Paid to Creditors Today:</p>
+              <div class="space-y-2 max-h-48 overflow-y-auto">
+                <div
+                  v-for="payment in dailyCreditorsPaidList"
+                  :key="payment.id"
+                  class="flex justify-between items-center py-2 border-b border-gray-200"
+                >
+                  <p class="text-sm text-gray-900">{{ payment.creditors?.name }}</p>
+                  <p class="text-sm font-medium text-orange-600">{{ formatCurrency(payment.amount) }}</p>
+                </div>
+              </div>
+            </div>
+            <div v-else class="text-sm text-gray-500">No payments to creditors today</div>
+          </div>
+        </div>
+      </div>
+
       <div v-if="userStore.isAdmin" class="bg-white shadow rounded-lg">
         <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
-          <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Quick Stats</h3>
+          <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Profit Summary</h3>
           <div class="grid grid-cols-1 gap-3 sm:gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-3">
             <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg">
               <dt class="text-xs sm:text-sm font-medium text-gray-500">Today's Profit</dt>
@@ -171,16 +348,25 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useProductStore } from '../../stores/productStore'
 import { useSalesStore } from '../../stores/salesStore'
 import { useUserStore } from '../../stores/userStore'
+import { useExpensesBankingStore } from '../../stores/expensesBankingStore'
+import { useFinanceStore } from '../../stores/financeStore'
 import { getDefaultCurrency } from '../../utils/supabase'
+import PieChart from '../../components/PieChart.vue'
 
 const productStore = useProductStore()
 const salesStore = useSalesStore()
 const userStore = useUserStore()
+const expensesBankingStore = useExpensesBankingStore()
+const financeStore = useFinanceStore()
 const currency = getDefaultCurrency()
+
+const today = new Date().toISOString().split('T')[0]
+const balanceBD = ref(0)
+const balanceCDSaved = ref(null)
 
 const loading = computed(() => productStore.loading || salesStore.loading)
 
@@ -193,7 +379,6 @@ const lowStockCount = computed(() => {
 })
 
 const dailySales = computed(() => {
-  const today = new Date().toISOString().split('T')[0]
   return salesStore.sales.filter(sale => {
     const saleDate = new Date(sale.sold_at).toISOString().split('T')[0]
     return saleDate === today
@@ -211,6 +396,102 @@ const dailySalesAmount = computed(() => {
   }, 0)
 })
 
+const dailyExpensesList = computed(() => {
+  if (!expensesBankingStore.expenses) return []
+  return expensesBankingStore.expenses.filter(e => e.expense_date === today)
+})
+
+const dailyExpenses = computed(() => {
+  return dailyExpensesList.value.reduce((sum, e) => sum + Number(e.amount), 0)
+})
+
+const dailyBankDepositsList = computed(() => {
+  if (!expensesBankingStore.deposits) return []
+  return expensesBankingStore.deposits.filter(d => d.deposit_date === today)
+})
+
+const dailyBankDeposits = computed(() => {
+  return dailyBankDepositsList.value.reduce((sum, d) => sum + Number(d.amount), 0)
+})
+
+function getDateString(dateValue) {
+  if (!dateValue) return null
+  const date = new Date(dateValue)
+  if (isNaN(date.getTime())) return null
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+const dailyNewDebtorsList = computed(() => {
+  if (!financeStore.debtors) return []
+  return financeStore.debtors.filter(d => {
+    if (!d.created_at) return false
+    return getDateString(d.created_at) === today
+  })
+})
+
+const dailyNewDebts = computed(() => {
+  return dailyNewDebtorsList.value.reduce((sum, d) => sum + Number(d.total_amount), 0)
+})
+
+const dailyDebtsCollectedList = computed(() => {
+  if (!financeStore.payments) return []
+  return financeStore.payments.filter(p => {
+    if (!p.payment_date || !p.debtor_id) return false
+    return getDateString(p.payment_date) === today
+  })
+})
+
+const dailyDebtsCollected = computed(() => {
+  return dailyDebtsCollectedList.value.reduce((sum, p) => sum + Number(p.amount), 0)
+})
+
+const dailyCreditorsPaidList = computed(() => {
+  if (!financeStore.payments) return []
+  return financeStore.payments.filter(p => {
+    if (!p.payment_date || !p.creditor_id) return false
+    return getDateString(p.payment_date) === today
+  })
+})
+
+const dailyCreditorsPaid = computed(() => {
+  return dailyCreditorsPaidList.value.reduce((sum, p) => sum + Number(p.amount), 0)
+})
+
+const totalDebtorsRemaining = computed(() => {
+  if (!financeStore.debtors) return 0
+  return financeStore.debtors.reduce((sum, d) => sum + Number(d.remaining_amount), 0)
+})
+
+const totalCreditorsRemaining = computed(() => {
+  if (!financeStore.creditors) return 0
+  return financeStore.creditors.reduce((sum, c) => sum + Number(c.remaining_amount), 0)
+})
+
+const expectedCash = computed(() => {
+  return balanceBD.value + dailySalesAmount.value + dailyDebtsCollected.value - dailyExpenses.value - dailyCreditorsPaid.value - dailyBankDeposits.value
+})
+
+const spendingData = computed(() => {
+  const data = []
+  if (dailyExpenses.value > 0) {
+    data.push({ label: 'Expenses', value: dailyExpenses.value, color: '#EF4444' })
+  }
+  if (dailyCreditorsPaid.value > 0) {
+    data.push({ label: 'Creditors Paid', value: dailyCreditorsPaid.value, color: '#F97316' })
+  }
+  if (dailyBankDeposits.value > 0) {
+    data.push({ label: 'Bank Deposits', value: dailyBankDeposits.value, color: '#06B6D4' })
+  }
+  return data
+})
+
+const totalSpending = computed(() => {
+  return dailyExpenses.value + dailyCreditorsPaid.value + dailyBankDeposits.value
+})
+
 function formatCurrency(value) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -218,9 +499,23 @@ function formatCurrency(value) {
   }).format(value)
 }
 
-onMounted(() => {
+async function loadBalances() {
+  balanceBD.value = await expensesBankingStore.getBalanceBD(today)
+  balanceCDSaved.value = await expensesBankingStore.getBalanceCD(today)
+}
+
+onMounted(async () => {
   productStore.fetchProducts()
   salesStore.fetchSales()
+
+  if (userStore.isAdmin) {
+    expensesBankingStore.fetchExpenses()
+    expensesBankingStore.fetchDeposits()
+    await expensesBankingStore.fetchDailyBalances()
+    await financeStore.fetchDebtors()
+    await financeStore.fetchCreditors()
+    await financeStore.fetchAllPayments()
+    await loadBalances()
+  }
 })
 </script>
-
