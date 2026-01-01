@@ -25,104 +25,311 @@
       </div>
     </div>
 
+    <!-- Cash Flow Summary -->
     <div class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
       <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
-        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Summary</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5">
-          <div class="bg-blue-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg border border-blue-200">
-            <dt class="text-xs sm:text-sm font-medium text-blue-600">Balance B/D</dt>
+        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Cash Flow Summary</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4 md:gap-5">
+          <div class="bg-blue-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-blue-200">
+            <dt class="text-xs sm:text-sm font-medium text-blue-600">Opening Balance</dt>
             <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-blue-700">
               {{ formatCurrency(balanceBD) }}
             </dd>
           </div>
-          <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg">
-            <dt class="text-xs sm:text-sm font-medium text-gray-500">Total Sales</dt>
-            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
-              {{ dailySales.length }}
-            </dd>
-          </div>
-          <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg">
-            <dt class="text-xs sm:text-sm font-medium text-gray-500">Total Revenue</dt>
-            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
+          <div class="bg-green-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-green-200">
+            <dt class="text-xs sm:text-sm font-medium text-green-600">Total Sales</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-green-700">
               {{ formatCurrency(totalRevenue) }}
             </dd>
           </div>
-          <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg">
-            <dt class="text-xs sm:text-sm font-medium text-gray-500">Total Profit</dt>
-            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold" :class="dailyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
-              {{ formatCurrency(dailyProfit) }}
+          <div class="bg-purple-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-purple-200">
+            <dt class="text-xs sm:text-sm font-medium text-purple-600">Debts Collected</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-purple-700">
+              {{ formatCurrency(dailyDebtsCollected) }}
             </dd>
           </div>
-          <div class="bg-green-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg border border-green-200 col-span-2 sm:col-span-1">
-            <dt class="text-xs sm:text-sm font-medium text-green-600 mb-1">Balance C/D</dt>
-            <dd v-if="!userStore.isAdmin && balanceCDSaved !== null" class="text-lg sm:text-xl md:text-2xl font-semibold text-green-700">
-              {{ formatCurrency(balanceCDSaved) }}
+          <div class="bg-red-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-red-200">
+            <dt class="text-xs sm:text-sm font-medium text-red-600">Expenses</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-red-700">
+              {{ formatCurrency(dailyExpenses) }}
             </dd>
-            <dd v-else-if="!userStore.isAdmin && balanceCDSaved === null" class="text-sm text-gray-500">
-              Not set
+          </div>
+          <div class="bg-orange-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-orange-200">
+            <dt class="text-xs sm:text-sm font-medium text-orange-600">Creditors Paid</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-orange-700">
+              {{ formatCurrency(dailyCreditorsPaid) }}
             </dd>
-            <dd v-else class="flex items-center gap-2">
+          </div>
+          <div class="bg-cyan-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-cyan-200">
+            <dt class="text-xs sm:text-sm font-medium text-cyan-600">Bank Deposits</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-cyan-700">
+              {{ formatCurrency(dailyBankDeposits) }}
+            </dd>
+          </div>
+          <div class="bg-yellow-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-yellow-200">
+            <dt class="text-xs sm:text-sm font-medium text-yellow-600">New Debts</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-yellow-700">
+              {{ formatCurrency(dailyNewDebts) }}
+            </dd>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-indigo-50 px-4 py-4 rounded-lg border border-indigo-200">
+              <dt class="text-sm font-medium text-indigo-600">Expected Cash</dt>
+              <dd class="mt-1 text-xl sm:text-2xl font-bold text-indigo-700">
+                {{ formatCurrency(expectedCash) }}
+              </dd>
+              <p class="text-xs text-indigo-500 mt-1">
+                Opening + Sales + Debts Collected - Expenses - Creditors Paid - Bank Deposits
+              </p>
+            </div>
+            <div class="bg-teal-50 px-4 py-4 rounded-lg border border-teal-200">
+              <dt class="text-sm font-medium text-teal-600 mb-1">Closing Balance</dt>
+              <dd v-if="!userStore.isAdmin && balanceCDSaved !== null" class="text-xl sm:text-2xl font-bold text-teal-700">
+                {{ formatCurrency(balanceCDSaved) }}
+              </dd>
+              <dd v-else-if="!userStore.isAdmin && balanceCDSaved === null" class="text-sm text-gray-500">
+                Not set
+              </dd>
+              <dd v-else class="flex items-center gap-2">
+                <input
+                  v-model="balanceCD"
+                  type="number"
+                  step="0.01"
+                  placeholder="Enter balance"
+                  class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm px-2 py-1.5"
+                />
+                <button
+                  @click="saveBalanceCD"
+                  :disabled="savingBalance"
+                  class="px-3 py-1.5 text-sm font-medium text-white bg-teal-600 rounded-md hover:bg-teal-700 disabled:opacity-50 whitespace-nowrap"
+                >
+                  {{ savingBalance ? '...' : 'Save' }}
+                </button>
+              </dd>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Expenses Section -->
+    <div v-if="dailyExpensesList.length > 0" class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
+      <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
+          Expenses ({{ dailyExpensesList.length }})
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="expense in dailyExpensesList" :key="expense.id">
+                <td class="px-4 py-2 text-sm text-gray-900">{{ expense.title }}</td>
+                <td class="px-4 py-2 text-sm text-red-600 text-right font-medium">{{ formatCurrency(expense.amount) }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="bg-gray-50">
+              <tr>
+                <td class="px-4 py-2 text-sm font-bold text-gray-900">Total</td>
+                <td class="px-4 py-2 text-sm font-bold text-red-600 text-right">{{ formatCurrency(dailyExpenses) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Debtors of the Day -->
+    <div v-if="dailyNewDebtorsList.length > 0" class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
+      <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
+          New Debtors Today ({{ dailyNewDebtorsList.length }})
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="debtor in dailyNewDebtorsList" :key="debtor.id">
+                <td class="px-4 py-2 text-sm text-gray-900">{{ debtor.name }}</td>
+                <td class="px-4 py-2 text-sm text-gray-500">{{ debtor.description || '-' }}</td>
+                <td class="px-4 py-2 text-sm text-yellow-600 text-right font-medium">{{ formatCurrency(debtor.total_amount) }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="bg-gray-50">
+              <tr>
+                <td colspan="2" class="px-4 py-2 text-sm font-bold text-gray-900">Total</td>
+                <td class="px-4 py-2 text-sm font-bold text-yellow-600 text-right">{{ formatCurrency(dailyNewDebts) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debts Collected Today -->
+    <div v-if="dailyDebtsCollectedList.length > 0" class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
+      <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
+          Debts Collected Today ({{ dailyDebtsCollectedList.length }})
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Debtor</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
+                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Amount Paid</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="payment in dailyDebtsCollectedList" :key="payment.id">
+                <td class="px-4 py-2 text-sm text-gray-900">{{ payment.debtors?.name || '-' }}</td>
+                <td class="px-4 py-2 text-sm text-gray-500">{{ payment.notes || '-' }}</td>
+                <td class="px-4 py-2 text-sm text-purple-600 text-right font-medium">{{ formatCurrency(payment.amount) }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="bg-gray-50">
+              <tr>
+                <td colspan="2" class="px-4 py-2 text-sm font-bold text-gray-900">Total</td>
+                <td class="px-4 py-2 text-sm font-bold text-purple-600 text-right">{{ formatCurrency(dailyDebtsCollected) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Creditors Paid Today -->
+    <div v-if="dailyCreditorsPaidList.length > 0" class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
+      <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
+          Creditors Paid Today ({{ dailyCreditorsPaidList.length }})
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Creditor</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
+                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Amount Paid</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="payment in dailyCreditorsPaidList" :key="payment.id">
+                <td class="px-4 py-2 text-sm text-gray-900">{{ payment.creditors?.name || '-' }}</td>
+                <td class="px-4 py-2 text-sm text-gray-500">{{ payment.notes || '-' }}</td>
+                <td class="px-4 py-2 text-sm text-orange-600 text-right font-medium">{{ formatCurrency(payment.amount) }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="bg-gray-50">
+              <tr>
+                <td colspan="2" class="px-4 py-2 text-sm font-bold text-gray-900">Total</td>
+                <td class="px-4 py-2 text-sm font-bold text-orange-600 text-right">{{ formatCurrency(dailyCreditorsPaid) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank Deposits Today -->
+    <div v-if="dailyBankDepositsList.length > 0" class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
+      <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
+          Bank Deposits Today ({{ dailyBankDepositsList.length }})
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Bank</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Agent</th>
+                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Reference</th>
+                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Amount</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="deposit in dailyBankDepositsList" :key="deposit.id">
+                <td class="px-4 py-2 text-sm text-gray-900">{{ deposit.banks?.name || '-' }}</td>
+                <td class="px-4 py-2 text-sm text-gray-500">{{ deposit.agent_name || '-' }}</td>
+                <td class="px-4 py-2 text-sm text-gray-500">{{ deposit.reference_number || '-' }}</td>
+                <td class="px-4 py-2 text-sm text-cyan-600 text-right font-medium">{{ formatCurrency(deposit.amount) }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="bg-gray-50">
+              <tr>
+                <td colspan="3" class="px-4 py-2 text-sm font-bold text-gray-900">Total</td>
+                <td class="px-4 py-2 text-sm font-bold text-cyan-600 text-right">{{ formatCurrency(dailyBankDeposits) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sales Section -->
+    <div class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
+      <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
+        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
+          Sales ({{ dailySales.length }})
+        </h2>
+
+        <div v-if="salesStore.loading" class="text-center py-8">
+          <p class="text-gray-500">Loading sales...</p>
+        </div>
+
+        <div v-else-if="dailySales.length === 0" class="text-center py-8">
+          <p class="text-gray-500">No sales found for this date.</p>
+        </div>
+
+        <div v-else>
+          <div class="mb-4">
+            <div class="relative">
               <input
-                v-model="balanceCD"
-                type="number"
-                step="0.01"
-                placeholder="Enter balance"
-                class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm px-2 py-1.5"
+                v-model="searchQuery"
+                type="text"
+                placeholder="Search sales by product name..."
+                class="block w-full sm:w-80 rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-4 py-2 pl-10"
               />
-              <button
-                @click="saveBalanceCD"
-                :disabled="savingBalance"
-                class="px-3 py-1.5 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:opacity-50 whitespace-nowrap"
-              >
-                {{ savingBalance ? '...' : 'Save' }}
-              </button>
-            </dd>
+              <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          <div v-if="filteredSales.length === 0" class="text-center py-8">
+            <p class="text-gray-500">No sales match your search.</p>
+          </div>
+
+          <div v-else class="overflow-hidden" id="report-table">
+            <Table
+              :columns="columns"
+              :data="filteredSales"
+            >
+              <template #product_name="{ row }">
+                {{ row.products?.name || '-' }}
+              </template>
+              <template #profit="{ row }">
+                <span :class="row.profit >= 0 ? 'text-green-600' : 'text-red-600'">
+                  {{ formatCurrency(row.profit) }}
+                </span>
+              </template>
+            </Table>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div v-if="salesStore.loading" class="text-center py-8">
-      <p class="text-gray-500">Loading report...</p>
-    </div>
-
-    <div v-else-if="dailySales.length === 0" class="text-center py-8">
-      <p class="text-gray-500">No sales found for this date.</p>
-    </div>
-
-    <div v-else>
-      <div class="mb-4">
-        <div class="relative">
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search sales by product name or date..."
-            class="block w-full sm:w-80 rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-4 py-2 pl-10"
-          />
-          <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-      </div>
-
-      <div v-if="filteredSales.length === 0" class="text-center py-8">
-        <p class="text-gray-500">No sales match your search.</p>
-      </div>
-
-      <div v-else class="bg-white shadow overflow-hidden sm:rounded-md" id="report-table">
-        <Table
-          :columns="columns"
-          :data="filteredSales"
-        >
-        <template #product_name="{ row }">
-          {{ row.products?.name || '-' }}
-        </template>
-        <template #profit="{ row }">
-          <span :class="row.profit >= 0 ? 'text-green-600' : 'text-red-600'">
-            {{ formatCurrency(row.profit) }}
-          </span>
-        </template>
-      </Table>
       </div>
     </div>
   </div>
@@ -132,12 +339,14 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { useSalesStore } from '../../stores/salesStore'
 import { useExpensesBankingStore } from '../../stores/expensesBankingStore'
+import { useFinanceStore } from '../../stores/financeStore'
 import { useUserStore } from '../../stores/userStore'
 import Table from '../../components/Table.vue'
 import { getDefaultCurrency } from '../../utils/supabase'
 
 const salesStore = useSalesStore()
 const expensesBankingStore = useExpensesBankingStore()
+const financeStore = useFinanceStore()
 const userStore = useUserStore()
 const currency = getDefaultCurrency()
 const selectedDate = ref(new Date().toISOString().split('T')[0])
@@ -148,6 +357,7 @@ const balanceCDSaved = ref(null)
 const savingBalance = ref(false)
 const toast = ref({ show: false, message: '', type: 'success' })
 
+// Daily Sales
 const dailySales = computed(() => {
   if (!salesStore.sales || salesStore.sales.length === 0) return []
   if (!selectedDate.value) return salesStore.dailySales || []
@@ -185,11 +395,73 @@ const totalRevenue = computed(() => {
   }, 0)
 })
 
-const dailyProfit = computed(() => {
-  if (!dailySales.value || dailySales.value.length === 0) return 0
-  return dailySales.value.reduce((sum, sale) => {
-    return sum + (sale.profit || 0)
-  }, 0)
+// Daily Expenses
+const dailyExpensesList = computed(() => {
+  if (!expensesBankingStore.expenses || expensesBankingStore.expenses.length === 0) return []
+  return expensesBankingStore.expenses.filter(e => e.expense_date === selectedDate.value)
+})
+
+const dailyExpenses = computed(() => {
+  return dailyExpensesList.value.reduce((sum, e) => sum + Number(e.amount), 0)
+})
+
+function getDateString(dateValue) {
+  if (!dateValue) return null
+  const date = new Date(dateValue)
+  if (isNaN(date.getTime())) return null
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+const dailyNewDebtorsList = computed(() => {
+  if (!financeStore.debtors || financeStore.debtors.length === 0) return []
+  return financeStore.debtors.filter(d => {
+    if (!d.created_at) return false
+    return getDateString(d.created_at) === selectedDate.value
+  })
+})
+
+const dailyNewDebts = computed(() => {
+  return dailyNewDebtorsList.value.reduce((sum, d) => sum + Number(d.total_amount), 0)
+})
+
+const dailyDebtsCollectedList = computed(() => {
+  if (!financeStore.payments || financeStore.payments.length === 0) return []
+  return financeStore.payments.filter(p => {
+    if (!p.payment_date || !p.debtor_id) return false
+    return getDateString(p.payment_date) === selectedDate.value
+  })
+})
+
+const dailyDebtsCollected = computed(() => {
+  return dailyDebtsCollectedList.value.reduce((sum, p) => sum + Number(p.amount), 0)
+})
+
+const dailyCreditorsPaidList = computed(() => {
+  if (!financeStore.payments || financeStore.payments.length === 0) return []
+  return financeStore.payments.filter(p => {
+    if (!p.payment_date || !p.creditor_id) return false
+    return getDateString(p.payment_date) === selectedDate.value
+  })
+})
+
+const dailyCreditorsPaid = computed(() => {
+  return dailyCreditorsPaidList.value.reduce((sum, p) => sum + Number(p.amount), 0)
+})
+
+const dailyBankDepositsList = computed(() => {
+  if (!expensesBankingStore.deposits || expensesBankingStore.deposits.length === 0) return []
+  return expensesBankingStore.deposits.filter(d => d.deposit_date === selectedDate.value)
+})
+
+const dailyBankDeposits = computed(() => {
+  return dailyBankDepositsList.value.reduce((sum, d) => sum + Number(d.amount), 0)
+})
+
+const expectedCash = computed(() => {
+  return balanceBD.value + totalRevenue.value + dailyDebtsCollected.value - dailyExpenses.value - dailyCreditorsPaid.value - dailyBankDeposits.value
 })
 
 const columns = [
@@ -202,7 +474,12 @@ const columns = [
 
 onMounted(async () => {
   salesStore.fetchSales()
+  expensesBankingStore.fetchExpenses()
+  expensesBankingStore.fetchDeposits()
   await expensesBankingStore.fetchDailyBalances()
+  await financeStore.fetchDebtors()
+  await financeStore.fetchCreditors()
+  await financeStore.fetchAllPayments()
   await loadBalances()
 })
 
@@ -230,7 +507,7 @@ async function saveBalanceCD() {
   try {
     await expensesBankingStore.saveBalanceCD(selectedDate.value, parseFloat(balanceCD.value))
     balanceCDSaved.value = parseFloat(balanceCD.value)
-    showToast('Balance C/D saved successfully!', 'success')
+    showToast('Closing Balance saved successfully!', 'success')
   } catch (error) {
     console.error('Error saving balance:', error)
     showToast('Failed to save balance. Please try again.', 'error')
@@ -265,4 +542,3 @@ function printReport() {
   }
 }
 </style>
-
