@@ -89,6 +89,22 @@ export const useFinanceStore = defineStore('finance', {
             }
         },
 
+        async fetchAllPayments() {
+            try {
+                const { data, error } = await supabase
+                    .from('finance_payments')
+                    .select('*, debtors(id, name), creditors(id, name)')
+                    .order('payment_date', { ascending: false })
+
+                if (error) throw error
+                this.payments = data
+                return data
+            } catch (error) {
+                console.error('Error fetching all payments:', error)
+                throw error
+            }
+        },
+
         async addDebtor(debtor) {
             try {
                 const { data: { user } } = await supabase.auth.getUser()
