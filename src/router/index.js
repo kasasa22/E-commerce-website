@@ -93,6 +93,12 @@ const router = createRouter({
           component: () => import('../pages/banking/index.vue'),
           meta: { roles: ['superadmin', 'admin', 'seller'] },
         },
+        {
+          path: 'reports/bank-deposits',
+          name: 'bank-deposits-details',
+          component: () => import('../pages/reports/bank-deposits.vue'),
+          meta: { roles: ['superadmin', 'admin'] },
+        },
       ],
     },
     {
