@@ -42,6 +42,12 @@
               {{ formatCurrency(totalRevenue) }}
             </dd>
           </div>
+          <div class="px-3 py-3 sm:px-4 sm:py-4 rounded-lg border" :class="totalProfit >= 0 ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'">
+            <dt class="text-xs sm:text-sm font-medium" :class="totalProfit >= 0 ? 'text-emerald-600' : 'text-red-600'">Total Profit</dt>
+            <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold" :class="totalProfit >= 0 ? 'text-emerald-700' : 'text-red-700'">
+              {{ formatCurrency(totalProfit) }}
+            </dd>
+          </div>
           <div class="bg-purple-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-purple-200">
             <dt class="text-xs sm:text-sm font-medium text-purple-600">Debts Collected</dt>
             <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-purple-700">
@@ -248,30 +254,37 @@
     <!-- Bank Deposits Today -->
     <div v-if="dailyBankDepositsList.length > 0" class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
       <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
-        <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
-          Bank Deposits Today ({{ dailyBankDepositsList.length }})
-        </h2>
+        <div class="flex justify-between items-center mb-3 sm:mb-4">
+          <h2 class="text-base sm:text-lg font-medium text-gray-900">
+            Bank Deposits Today ({{ dailyBankDepositsList.length }})
+          </h2>
+          <router-link
+            :to="{ name: 'bank-deposits-details', query: { date: selectedDate } }"
+            class="text-sm text-cyan-600 hover:text-cyan-800 font-medium"
+          >
+            View Details &rarr;
+          </router-link>
+        </div>
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Bank</th>
-                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Agent</th>
-                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Reference</th>
-                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Amount</th>
+                <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Transactions</th>
+                <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Total Amount</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="deposit in dailyBankDepositsList" :key="deposit.id">
-                <td class="px-4 py-2 text-sm text-gray-900">{{ deposit.banks?.name || '-' }}</td>
-                <td class="px-4 py-2 text-sm text-gray-500">{{ deposit.agent_name || '-' }}</td>
-                <td class="px-4 py-2 text-sm text-gray-500">{{ deposit.reference_number || '-' }}</td>
-                <td class="px-4 py-2 text-sm text-cyan-600 text-right font-medium">{{ formatCurrency(deposit.amount) }}</td>
+              <tr v-for="group in dailyBankDepositsGrouped" :key="group.bank_id">
+                <td class="px-4 py-2 text-sm text-gray-900">{{ group.bank_name }}</td>
+                <td class="px-4 py-2 text-sm text-gray-500 text-center">{{ group.count }}</td>
+                <td class="px-4 py-2 text-sm text-cyan-600 text-right font-medium">{{ formatCurrency(group.total) }}</td>
               </tr>
             </tbody>
             <tfoot class="bg-gray-50">
               <tr>
-                <td colspan="3" class="px-4 py-2 text-sm font-bold text-gray-900">Total</td>
+                <td class="px-4 py-2 text-sm font-bold text-gray-900">Total</td>
+                <td class="px-4 py-2 text-sm font-bold text-gray-500 text-center">{{ dailyBankDepositsList.length }}</td>
                 <td class="px-4 py-2 text-sm font-bold text-cyan-600 text-right">{{ formatCurrency(dailyBankDeposits) }}</td>
               </tr>
             </tfoot>
@@ -395,6 +408,14 @@ const totalRevenue = computed(() => {
   }, 0)
 })
 
+const totalProfit = computed(() => {
+  if (!dailySales.value || dailySales.value.length === 0) return 0
+  return dailySales.value.reduce((sum, sale) => {
+    if (!sale || sale.profit === undefined) return sum
+    return sum + Number(sale.profit)
+  }, 0)
+})
+
 // Daily Expenses
 const dailyExpensesList = computed(() => {
   if (!expensesBankingStore.expenses || expensesBankingStore.expenses.length === 0) return []
@@ -458,6 +479,26 @@ const dailyBankDepositsList = computed(() => {
 
 const dailyBankDeposits = computed(() => {
   return dailyBankDepositsList.value.reduce((sum, d) => sum + Number(d.amount), 0)
+})
+
+const dailyBankDepositsGrouped = computed(() => {
+  if (!dailyBankDepositsList.value || dailyBankDepositsList.value.length === 0) return []
+  const grouped = {}
+  dailyBankDepositsList.value.forEach(d => {
+    const bankId = d.bank_id
+    const bankName = d.banks?.name || 'Unknown Bank'
+    if (!grouped[bankId]) {
+      grouped[bankId] = {
+        bank_id: bankId,
+        bank_name: bankName,
+        total: 0,
+        count: 0
+      }
+    }
+    grouped[bankId].total += Number(d.amount)
+    grouped[bankId].count++
+  })
+  return Object.values(grouped)
 })
 
 const expectedCash = computed(() => {
