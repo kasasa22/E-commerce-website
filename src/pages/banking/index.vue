@@ -121,56 +121,65 @@
         </div>
 
         <div v-else>
+          <!-- Aggregated View by Bank -->
           <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th v-if="userStore.isAdmin" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Transactions</th>
+                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
+                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="deposit in store.deposits" :key="deposit.id" class="hover:bg-gray-50 transition-colors">
+                <tr v-for="(bankData, bankId) in store.depositsByBank" :key="bankId" class="hover:bg-gray-50 transition-colors">
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">{{ deposit.banks?.name || 'Unknown' }}</div>
+                    <div class="text-sm font-medium text-gray-900">{{ bankData.bank?.name || 'Unknown' }}</div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-semibold text-green-600">{{ formatCurrency(deposit.amount) }}</div>
+                  <td class="px-6 py-4 whitespace-nowrap text-center">
+                    <div class="text-sm text-gray-500">{{ bankData.count }}</div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{ deposit.agent_name }}</div>
+                  <td class="px-6 py-4 whitespace-nowrap text-right">
+                    <div class="text-sm font-semibold text-green-600">{{ formatCurrency(bankData.total) }}</div>
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-500">{{ formatDate(deposit.deposit_date) }}</div>
-                  </td>
-                  <td v-if="userStore.isAdmin" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button @click="openEditDepositModal(deposit)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                    <button @click="confirmDeleteDeposit(deposit)" class="text-red-600 hover:text-red-900">Delete</button>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <router-link
+                      :to="{ name: 'bank-deposits-details', query: { bank_id: bankId } }"
+                      class="text-cyan-600 hover:text-cyan-900"
+                    >
+                      View Details
+                    </router-link>
                   </td>
                 </tr>
               </tbody>
+              <tfoot class="bg-gray-50">
+                <tr>
+                  <td class="px-6 py-3 text-sm font-bold text-gray-900">Total</td>
+                  <td class="px-6 py-3 text-sm font-bold text-gray-500 text-center">{{ store.deposits.length }}</td>
+                  <td class="px-6 py-3 text-sm font-bold text-green-600 text-right">{{ formatCurrency(store.totalAllBanks) }}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
 
+          <!-- Mobile View - Aggregated by Bank -->
           <div class="md:hidden divide-y divide-gray-200">
-            <div v-for="deposit in store.deposits" :key="deposit.id" class="p-4">
+            <div v-for="(bankData, bankId) in store.depositsByBank" :key="bankId" class="p-4">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex-1 min-w-0 pr-3">
-                  <div class="text-sm font-bold text-gray-900 truncate">{{ deposit.banks?.name || 'Unknown' }}</div>
-                  <div class="text-xs text-gray-500 mt-0.5">{{ formatDate(deposit.deposit_date) }}</div>
+                  <div class="text-sm font-bold text-gray-900 truncate">{{ bankData.bank?.name || 'Unknown' }}</div>
+                  <div class="text-xs text-gray-500 mt-0.5">{{ bankData.count }} transactions</div>
                 </div>
-                <p class="text-base font-bold text-green-600 flex-shrink-0">{{ formatCurrency(deposit.amount) }}</p>
+                <p class="text-base font-bold text-green-600 flex-shrink-0">{{ formatCurrency(bankData.total) }}</p>
               </div>
-              <div class="text-xs text-gray-600 mb-3">
-                <span class="font-medium">Agent:</span> {{ deposit.agent_name }}
-              </div>
-              <div v-if="userStore.isAdmin" class="flex gap-2">
-                <button @click="openEditDepositModal(deposit)" class="flex-1 px-3 py-2 text-sm text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 font-medium">Edit</button>
-                <button @click="confirmDeleteDeposit(deposit)" class="flex-1 px-3 py-2 text-sm text-red-600 border border-red-600 rounded-lg hover:bg-red-50 font-medium">Delete</button>
-              </div>
+              <router-link
+                :to="{ name: 'bank-deposits-details', query: { bank_id: bankId } }"
+                class="inline-block mt-2 text-sm text-cyan-600 hover:text-cyan-800 font-medium"
+              >
+                View Details &rarr;
+              </router-link>
             </div>
           </div>
         </div>
