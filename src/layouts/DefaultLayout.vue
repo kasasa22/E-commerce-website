@@ -30,7 +30,7 @@
             <router-link
               to="/"
               @click="isMobile && (sidebarOpen = false)"
-              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               :class="
                 $route.path === '/'
                   ? 'bg-blue-50 text-blue-700'
@@ -46,7 +46,7 @@
             <router-link
               to="/products"
               @click="isMobile && (sidebarOpen = false)"
-              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               :class="
                 $route.path.startsWith('/products')
                   ? 'bg-blue-50 text-blue-700'
@@ -62,7 +62,7 @@
             <router-link
               to="/sales"
               @click="isMobile && (sidebarOpen = false)"
-              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               :class="
                 $route.path.startsWith('/sales')
                   ? 'bg-blue-50 text-blue-700'
@@ -83,7 +83,7 @@
                 <router-link
                   :to="{ name: 'reports-daily' }"
                   @click="handleNavClick"
-                  class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                   :class="
                     $route.name === 'reports-daily'
                       ? 'bg-blue-50 text-blue-700'
@@ -98,7 +98,7 @@
                 <router-link
                   :to="{ name: 'reports-monthly' }"
                   @click="handleNavClick"
-                  class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                   :class="
                     $route.name === 'reports-monthly'
                       ? 'bg-blue-50 text-blue-700'
@@ -113,7 +113,7 @@
                 <router-link
                   :to="{ name: 'reports-yearly' }"
                   @click="handleNavClick"
-                  class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                  class="flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
                   :class="
                     $route.name === 'reports-yearly'
                       ? 'bg-blue-50 text-blue-700'
@@ -131,7 +131,7 @@
             <router-link
               :to="{ name: 'expenses' }"
               @click="handleNavClick"
-              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-4"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               :class="
                 $route.name === 'expenses'
                   ? 'bg-blue-50 text-blue-700'
@@ -147,7 +147,7 @@
             <router-link
               :to="{ name: 'banking' }"
               @click="handleNavClick"
-              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               :class="
                 $route.name === 'banking'
                   ? 'bg-blue-50 text-blue-700'
@@ -164,7 +164,7 @@
               v-if="userStore.isAdmin"
               :to="{ name: 'finance' }"
               @click="handleNavClick"
-              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               :class="
                 $route.name === 'finance'
                   ? 'bg-blue-50 text-blue-700'
@@ -181,7 +181,7 @@
               v-if="userStore.isAdmin"
               :to="{ name: 'users' }"
               @click="handleNavClick"
-              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1"
+              class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
               :class="
                 $route.name === 'users'
                   ? 'bg-blue-50 text-blue-700'
@@ -206,7 +206,7 @@
             </div>
             <button
               @click="handleSignOut"
-              class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+              class="w-full flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -251,12 +251,11 @@
 
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/userStore'
 import { getAppName } from '../utils/supabase'
 
 const router = useRouter()
-const route = useRoute()
 const userStore = useUserStore()
 const appName = computed(() => getAppName())
 const sidebarOpen = ref(false)
