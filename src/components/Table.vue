@@ -1,24 +1,25 @@
 <template>
   <div>
     <div class="hidden md:block overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
+      <table class="min-w-full divide-y divide-gray-200" role="table" aria-label="Data table">
         <thead class="bg-gray-50">
           <tr>
             <th
               v-for="column in columns"
               :key="column.key"
-              class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              scope="col"
+              class="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
             >
               {{ column.label }}
             </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="(row, index) in data" :key="index" class="hover:bg-gray-50">
+          <tr v-for="(row, index) in data" :key="index" class="hover:bg-gray-50 transition-colors">
             <td
               v-for="column in columns"
               :key="column.key"
-              class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"
+              class="px-2 sm:px-4 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-900"
             >
               <slot :name="column.key" :row="row" :value="row[column.key]">
                 {{ formatValue(row[column.key], column) }}
@@ -41,7 +42,7 @@
             :key="column.key"
             class="flex justify-between items-start"
           >
-            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <span class="text-xs font-medium text-gray-700 uppercase tracking-wider">
               {{ column.label }}
             </span>
             <span class="text-sm font-medium text-gray-900 text-right ml-4">
