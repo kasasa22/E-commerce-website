@@ -29,7 +29,7 @@
     <div class="bg-white shadow sm:rounded-lg mb-4 sm:mb-6">
       <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
         <h2 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Cash Flow Summary</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4 md:gap-5">
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
           <div class="bg-blue-50 px-3 py-3 sm:px-4 sm:py-4 rounded-lg border border-blue-200">
             <dt class="text-xs sm:text-sm font-medium text-blue-600">Opening Balance</dt>
             <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold text-blue-700">
@@ -355,13 +355,12 @@ import { useExpensesBankingStore } from '../../stores/expensesBankingStore'
 import { useFinanceStore } from '../../stores/financeStore'
 import { useUserStore } from '../../stores/userStore'
 import Table from '../../components/Table.vue'
-import { getDefaultCurrency } from '../../utils/supabase'
+import { formatCurrency, getDateString } from '../../utils/formatters'
 
 const salesStore = useSalesStore()
 const expensesBankingStore = useExpensesBankingStore()
 const financeStore = useFinanceStore()
 const userStore = useUserStore()
-const currency = getDefaultCurrency()
 const selectedDate = ref(new Date().toISOString().split('T')[0])
 const searchQuery = ref('')
 const balanceBD = ref(0)
@@ -425,16 +424,6 @@ const dailyExpensesList = computed(() => {
 const dailyExpenses = computed(() => {
   return dailyExpensesList.value.reduce((sum, e) => sum + Number(e.amount), 0)
 })
-
-function getDateString(dateValue) {
-  if (!dateValue) return null
-  const date = new Date(dateValue)
-  if (isNaN(date.getTime())) return null
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
 
 const dailyNewDebtorsList = computed(() => {
   if (!financeStore.debtors || financeStore.debtors.length === 0) return []
@@ -555,13 +544,6 @@ async function saveBalanceCD() {
   } finally {
     savingBalance.value = false
   }
-}
-
-function formatCurrency(value) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency === 'UGX' ? 'UGX' : 'USD',
-  }).format(value)
 }
 
 function fetchReport() {
