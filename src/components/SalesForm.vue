@@ -8,7 +8,7 @@
         id="product_id"
         v-model="formData.product_id"
         required
-        class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
+        class="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
       >
         <option value="">Select a product</option>
         <option
@@ -33,7 +33,7 @@
         step="0.01"
         required
         :max="maxQuantity"
-        class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
+        class="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
       />
       <p v-if="selectedProduct" class="mt-1 text-xs text-gray-500">
         Available: {{ maxQuantity }} {{ maxQuantity > 1 ? 'units' : 'unit' }}
@@ -51,7 +51,7 @@
         min="0"
         step="0.01"
         required
-        class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
+        class="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
       />
     </div>
 
@@ -64,11 +64,11 @@
         v-model="formData.sold_at"
         type="datetime-local"
         required
-        class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
+        class="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
       />
     </div>
 
-    <div v-if="selectedProduct && formData.quantity && formData.selling_price" class="p-3 bg-gray-50 rounded-md border-2 border-gray-200">
+    <div v-if="selectedProduct && formData.quantity && formData.selling_price" class="p-3 bg-gray-50 rounded-md border border-gray-200">
       <p class="text-xs sm:text-sm text-gray-700">
         <strong>Estimated Profit:</strong>
         {{ formatCurrency((formData.selling_price - selectedProduct.buying_price) * formData.quantity) }}
@@ -90,7 +90,7 @@
       <button
         type="submit"
         :disabled="loading"
-        class="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition-colors"
+        class="w-full sm:w-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {{ loading ? 'Saving...' : 'Save Sale' }}
       </button>
@@ -101,7 +101,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useProductStore } from '../stores/productStore'
-import { getDefaultCurrency } from '../utils/supabase'
+import { formatCurrency } from '../utils/formatters'
 
 const props = defineProps({
   loading: {
@@ -173,14 +173,6 @@ const maxQuantity = computed(() => {
   
   return available
 })
-
-function formatCurrency(value) {
-  const currency = getDefaultCurrency()
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency === 'UGX' ? 'UGX' : 'USD',
-  }).format(value)
-}
 
 function handleSubmit() {
   emit('submit', {
