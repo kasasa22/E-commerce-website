@@ -2,12 +2,13 @@
   <div>
     <h1 class="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
 
-    <div v-if="loading" class="text-center py-8">
-      <p class="text-gray-500">Loading dashboard...</p>
+    <div v-if="loading" class="flex flex-col items-center justify-center py-8 sm:py-12">
+      <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-600"></div>
+      <p class="mt-4 text-sm text-gray-600">Loading dashboard...</p>
     </div>
 
     <div v-else class="space-y-6">
-      <div class="grid grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
         <div class="bg-white overflow-hidden shadow rounded-lg">
           <div class="p-3 sm:p-4 md:p-5">
             <div class="flex items-center">
@@ -18,7 +19,7 @@
               </div>
               <div class="ml-2 sm:ml-3 md:ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Products</dt>
+                  <dt class="text-xs sm:text-sm font-medium text-gray-700 truncate">Total Products</dt>
                   <dd class="text-base sm:text-lg font-medium text-gray-900">{{ productStore.products.length }}</dd>
                 </dl>
               </div>
@@ -36,7 +37,7 @@
               </div>
               <div class="ml-2 sm:ml-3 md:ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Sales</dt>
+                  <dt class="text-xs sm:text-sm font-medium text-gray-700 truncate">Total Sales</dt>
                   <dd class="text-base sm:text-lg font-medium text-gray-900">{{ dailySalesCount }}</dd>
                 </dl>
               </div>
@@ -54,7 +55,7 @@
               </div>
               <div class="ml-2 sm:ml-3 md:ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Today's Revenue</dt>
+                  <dt class="text-xs sm:text-sm font-medium text-gray-700 truncate">Today's Revenue</dt>
                   <dd class="text-base sm:text-lg font-medium text-gray-900">
                     {{ formatCurrency(dailySalesAmount) }}
                   </dd>
@@ -74,7 +75,7 @@
               </div>
               <div class="ml-2 sm:ml-3 md:ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-xs sm:text-sm font-medium text-gray-500 truncate">Low Stock Items</dt>
+                  <dt class="text-xs sm:text-sm font-medium text-gray-700 truncate">Low Stock Items</dt>
                   <dd class="text-base sm:text-lg font-medium text-gray-900">{{ lowStockCount }}</dd>
                 </dl>
               </div>
@@ -87,7 +88,7 @@
       <div v-if="userStore.isAdmin" class="bg-white shadow rounded-lg">
         <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
           <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Today's Cash Flow</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4">
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
             <div class="bg-blue-50 px-3 py-3 rounded-lg border border-blue-200">
               <dt class="text-xs font-medium text-blue-600">Opening Balance</dt>
               <dd class="mt-1 text-lg font-semibold text-blue-700">{{ formatCurrency(balanceBD) }}</dd>
@@ -354,15 +355,15 @@ import { useSalesStore } from '../../stores/salesStore'
 import { useUserStore } from '../../stores/userStore'
 import { useExpensesBankingStore } from '../../stores/expensesBankingStore'
 import { useFinanceStore } from '../../stores/financeStore'
-import { getDefaultCurrency } from '../../utils/supabase'
 import PieChart from '../../components/PieChart.vue'
+import { formatCurrency } from '../../utils/formatters'
+import { LOW_STOCK_THRESHOLD } from '../../utils/constants'
 
 const productStore = useProductStore()
 const salesStore = useSalesStore()
 const userStore = useUserStore()
 const expensesBankingStore = useExpensesBankingStore()
 const financeStore = useFinanceStore()
-const currency = getDefaultCurrency()
 
 const today = new Date().toISOString().split('T')[0]
 const balanceBD = ref(0)
@@ -371,11 +372,11 @@ const balanceCDSaved = ref(null)
 const loading = computed(() => productStore.loading || salesStore.loading)
 
 const lowStockProducts = computed(() => {
-  return productStore.getLowStockProducts(10)
+  return productStore.getLowStockProducts(LOW_STOCK_THRESHOLD)
 })
 
 const lowStockCount = computed(() => {
-  return productStore.getLowStockProducts(10).length
+  return productStore.getLowStockProducts(LOW_STOCK_THRESHOLD).length
 })
 
 const dailySales = computed(() => {
@@ -491,13 +492,6 @@ const spendingData = computed(() => {
 const totalSpending = computed(() => {
   return dailyExpenses.value + dailyCreditorsPaid.value + dailyBankDeposits.value
 })
-
-function formatCurrency(value) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency === 'UGX' ? 'UGX' : 'USD',
-  }).format(value)
-}
 
 async function loadBalances() {
   balanceBD.value = await expensesBankingStore.getBalanceBD(today)
