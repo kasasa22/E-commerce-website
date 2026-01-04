@@ -43,21 +43,33 @@
       </div>
     </div>
 
-    <div v-if="salesStore.loading" class="text-center py-8">
-      <p class="text-gray-500">Loading sales...</p>
+    <div v-if="salesStore.loading" class="flex flex-col items-center justify-center py-8 sm:py-12">
+      <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-600"></div>
+      <p class="mt-4 text-sm text-gray-600">Loading sales...</p>
     </div>
 
-    <div v-else-if="salesStore.error" class="text-red-600 py-4">
-      {{ salesStore.error }}
+    <div v-else-if="salesStore.error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex items-center justify-between">
+        <p class="text-red-700">{{ salesStore.error }}</p>
+        <button @click="salesStore.fetchSales()" class="text-sm font-medium text-red-600 hover:text-red-800">
+          Retry
+        </button>
+      </div>
     </div>
 
-    <div v-else-if="salesStore.sales.length === 0" class="text-center py-8">
-      <p class="text-gray-500">No sales found. Create your first sale!</p>
-    </div>
+    <EmptyState
+      v-else-if="salesStore.sales.length === 0"
+      title="No sales found"
+      description="Get started by creating your first sale."
+      action-text="New Sale"
+      @action="showCreateModal = true"
+    />
 
-    <div v-else-if="filteredSales.length === 0" class="text-center py-8">
-      <p class="text-gray-500">No sales match your search.</p>
-    </div>
+    <EmptyState
+      v-else-if="filteredSales.length === 0"
+      title="No sales match your search"
+      description="Try adjusting your search terms or date filter."
+    />
 
     <div v-else class="bg-white shadow overflow-hidden sm:rounded-md">
       <div class="hidden md:block">
@@ -148,56 +160,24 @@
       />
     </div>
 
-    <Teleport to="body">
-      <div v-if="showCreateModal" class="fixed top-0 left-0 w-screen h-screen bg-gray-600 bg-opacity-50 z-[9999] flex items-center justify-center p-4 sm:p-6 md:p-8">
-        <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-[90%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg max-h-[85vh] overflow-y-auto">
-          <div class="p-4 sm:p-5 md:p-6">
-            <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-6">
-              <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-900">New Sale</h3>
-              <button
-                @click="showCreateModal = false"
-                class="text-gray-400 hover:text-gray-500 transition-colors p-1 md:p-2 rounded-full hover:bg-gray-100"
-              >
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <SalesForm
-              :loading="salesStore.loading"
-              :error="salesStore.error"
-              @submit="handleCreate"
-              @cancel="showCreateModal = false"
-            />
-          </div>
-        </div>
-      </div>
+    <ModalWrapper v-model="showCreateModal" title="New Sale">
+      <SalesForm
+        :loading="salesStore.loading"
+        :error="salesStore.error"
+        @submit="handleCreate"
+        @cancel="showCreateModal = false"
+      />
+    </ModalWrapper>
 
-      <div v-if="showEditModal" class="fixed top-0 left-0 w-screen h-screen bg-gray-600 bg-opacity-50 z-[9999] flex items-center justify-center p-4 sm:p-6 md:p-8">
-        <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-[90%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg max-h-[85vh] overflow-y-auto">
-          <div class="p-4 sm:p-5 md:p-6">
-            <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-6">
-              <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-900">Edit Sale</h3>
-              <button
-                @click="showEditModal = false"
-                class="text-gray-400 hover:text-gray-500 transition-colors p-1 md:p-2 rounded-full hover:bg-gray-100"
-              >
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <SalesForm
-              :loading="salesStore.loading"
-              :error="salesStore.error"
-              :initial-data="selectedSale"
-              @submit="handleUpdate"
-              @cancel="showEditModal = false"
-            />
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <ModalWrapper v-model="showEditModal" title="Edit Sale">
+      <SalesForm
+        :loading="salesStore.loading"
+        :error="salesStore.error"
+        :initial-data="selectedSale"
+        @submit="handleUpdate"
+        @cancel="showEditModal = false"
+      />
+    </ModalWrapper>
   </div>
 </template>
 
@@ -209,19 +189,21 @@ import { useUserStore } from '../../stores/userStore'
 import Table from '../../components/Table.vue'
 import SalesForm from '../../components/SalesForm.vue'
 import Pagination from '../../components/Pagination.vue'
-import { getDefaultCurrency } from '../../utils/supabase'
+import EmptyState from '../../components/EmptyState.vue'
+import ModalWrapper from '../../components/ModalWrapper.vue'
+import { formatCurrency } from '../../utils/formatters'
+import { ITEMS_PER_PAGE } from '../../utils/constants'
 
 const salesStore = useSalesStore()
 const productStore = useProductStore()
 const userStore = useUserStore()
-const currency = getDefaultCurrency()
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const selectedSale = ref(null)
 const searchQuery = ref('')
 const dateFilter = ref('')
 const currentPage = ref(1)
-const itemsPerPage = 10
+const itemsPerPage = ITEMS_PER_PAGE
 
 const filteredSales = computed(() => {
   let sales = salesStore.sales
@@ -326,11 +308,5 @@ async function handleUpdate(saleData) {
   }
 }
 
-function formatCurrency(value) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency === 'UGX' ? 'UGX' : 'USD',
-  }).format(value)
-}
 </script>
 
