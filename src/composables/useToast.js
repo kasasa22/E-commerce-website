@@ -1,22 +1,23 @@
 import { ref } from 'vue'
+import { TOAST_DURATION } from '../utils/constants'
 
 const toasts = ref([])
 
 export function useToast() {
-  const showToast = (message, type = 'error') => {
+  const showToast = (message, type = 'error', duration = TOAST_DURATION) => {
     const id = Date.now()
     const toast = {
       id,
       message,
       type,
     }
-    
+
     toasts.value.push(toast)
-    
+
     setTimeout(() => {
       removeToast(id)
-    }, 5000)
-    
+    }, duration)
+
     return id
   }
   
