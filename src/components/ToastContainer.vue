@@ -1,18 +1,17 @@
 <template>
-  <div class="toast-container">
+  <div class="toast-container" role="alert" aria-live="polite">
     <TransitionGroup name="toast" tag="div">
       <div
         v-for="toast in toasts"
         :key="toast.id"
         :class="['toast', `toast-${toast.type}`]"
-        @click="removeToast(toast.id)"
       >
         <div class="toast-content">
           <span class="toast-message">{{ toast.message }}</span>
           <button
             class="toast-close"
             @click.stop="removeToast(toast.id)"
-            aria-label="Close"
+            aria-label="Close notification"
           >
             ×
           </button>
@@ -31,8 +30,8 @@ const { toasts, removeToast } = useToast()
 <style scoped>
 .toast-container {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: 0.5rem;
+  right: 0.5rem;
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -40,16 +39,29 @@ const { toasts, removeToast } = useToast()
   pointer-events: none;
 }
 
+@media (min-width: 640px) {
+  .toast-container {
+    top: 1rem;
+    right: 1rem;
+  }
+}
+
 .toast {
-  min-width: 300px;
-  max-width: 400px;
+  min-width: 280px;
+  max-width: calc(100vw - 1rem);
   background-color: white;
   border-radius: 0.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   pointer-events: auto;
-  cursor: pointer;
   border-left: 4px solid;
   animation: slideIn 0.3s ease-out;
+}
+
+@media (min-width: 640px) {
+  .toast {
+    min-width: 300px;
+    max-width: 400px;
+  }
 }
 
 .toast-error {
