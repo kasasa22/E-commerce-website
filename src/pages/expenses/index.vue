@@ -25,7 +25,7 @@
             </svg>
           </div>
           <div class="ml-2 sm:ml-4 min-w-0 flex-1">
-            <p class="text-[10px] sm:text-sm font-medium text-gray-500 truncate">Today</p>
+            <p class="text-xs sm:text-sm font-medium text-gray-700 truncate">Today</p>
             <p class="text-sm sm:text-xl font-bold text-gray-900 truncate">{{ formatCurrency(store.todayExpenses) }}</p>
           </div>
         </div>
@@ -38,7 +38,7 @@
             </svg>
           </div>
           <div class="ml-2 sm:ml-4 min-w-0 flex-1">
-            <p class="text-[10px] sm:text-sm font-medium text-gray-500 truncate">Total</p>
+            <p class="text-xs sm:text-sm font-medium text-gray-700 truncate">Total</p>
             <p class="text-sm sm:text-xl font-bold text-gray-900 truncate">{{ formatCurrency(store.totalExpenses) }}</p>
           </div>
         </div>
@@ -51,7 +51,7 @@
             </svg>
           </div>
           <div class="ml-2 sm:ml-4 min-w-0 flex-1">
-            <p class="text-[10px] sm:text-sm font-medium text-gray-500 truncate">Records</p>
+            <p class="text-xs sm:text-sm font-medium text-gray-700 truncate">Records</p>
             <p class="text-sm sm:text-xl font-bold text-gray-900 truncate">{{ store.expenses.length }}</p>
           </div>
         </div>
@@ -73,7 +73,7 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <div v-if="store.loading" class="p-8 sm:p-12 flex flex-col items-center justify-center">
         <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-600"></div>
-        <p class="mt-4 text-sm text-gray-500">Loading expenses...</p>
+        <p class="mt-4 text-sm text-gray-600">Loading expenses...</p>
       </div>
 
       <div v-else-if="filteredExpenses.length === 0" class="p-8 sm:p-12 text-center">
@@ -83,7 +83,7 @@
           </svg>
         </div>
         <h3 class="text-base sm:text-lg font-medium text-gray-900">No expenses found</h3>
-        <p class="text-sm text-gray-500 mt-1">Get started by adding your first expense.</p>
+        <p class="text-sm text-gray-600 mt-1">Get started by adding your first expense.</p>
         <button
           @click="openAddModal"
           class="mt-4 sm:mt-6 inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
@@ -227,6 +227,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useExpensesBankingStore } from '../../stores/expensesBankingStore'
 import { useUserStore } from '../../stores/userStore'
 import { useToast } from '../../composables/useToast'
+import { formatCurrency, formatDate } from '../../utils/formatters'
 import { getDefaultCurrency } from '../../utils/supabase'
 
 const store = useExpensesBankingStore()
@@ -265,19 +266,6 @@ const filteredExpenses = computed(() => {
 onMounted(async () => {
   await store.fetchExpenses()
 })
-
-function formatCurrency(amount) {
-  const currency = getDefaultCurrency()
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency === 'UGX' ? 'UGX' : 'USD',
-  }).format(amount || 0)
-}
-
-function formatDate(date) {
-  if (!date) return '-'
-  return new Date(date).toLocaleDateString()
-}
 
 function openAddModal() {
   isEditing.value = false
