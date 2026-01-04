@@ -25,21 +25,33 @@
       </div>
     </div>
 
-    <div v-if="productStore.loading" class="text-center py-8">
-      <p class="text-gray-500">Loading products...</p>
+    <div v-if="productStore.loading" class="flex flex-col items-center justify-center py-8 sm:py-12">
+      <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-600"></div>
+      <p class="mt-4 text-sm text-gray-600">Loading products...</p>
     </div>
 
-    <div v-else-if="productStore.error" class="text-red-600 py-4">
-      {{ productStore.error }}
+    <div v-else-if="productStore.error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div class="flex items-center justify-between">
+        <p class="text-red-700">{{ productStore.error }}</p>
+        <button @click="productStore.fetchProducts()" class="text-sm font-medium text-red-600 hover:text-red-800">
+          Retry
+        </button>
+      </div>
     </div>
 
-    <div v-else-if="productStore.products.length === 0" class="text-center py-8">
-      <p class="text-gray-500">No products found. Create your first product!</p>
-    </div>
+    <EmptyState
+      v-else-if="productStore.products.length === 0"
+      title="No products found"
+      description="Get started by creating your first product."
+      :action-text="userStore.isAdmin ? 'Add Product' : ''"
+      @action="showCreateModal = true"
+    />
 
-    <div v-else-if="filteredProducts.length === 0" class="text-center py-8">
-      <p class="text-gray-500">No products match your search.</p>
-    </div>
+    <EmptyState
+      v-else-if="filteredProducts.length === 0"
+      title="No products match your search"
+      description="Try adjusting your search terms."
+    />
 
     <div v-else class="bg-white shadow overflow-hidden sm:rounded-md">
       <div class="hidden md:block">
@@ -58,7 +70,7 @@
             </button>
             <button
               v-if="userStore.isAdmin"
-              @click="handleDelete(row.id)"
+              @click="handleDelete(row)"
                 class="text-red-600 hover:text-red-900 text-sm font-medium"
             >
               Delete
@@ -98,7 +110,7 @@
                 Edit
               </button>
               <button
-                @click="handleDelete(product.id)"
+                @click="handleDelete(product)"
                 class="flex-1 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100"
               >
                 Delete
@@ -116,58 +128,33 @@
       />
     </div>
 
-    <Teleport to="body">
-      <div v-if="showCreateModal" class="fixed top-0 left-0 w-screen h-screen bg-gray-600 bg-opacity-50 z-[9999] flex items-center justify-center p-4 sm:p-6 md:p-8">
-        <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-[90%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg max-h-[85vh] overflow-y-auto">
-          <div class="p-4 sm:p-5 md:p-6">
-            <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-6">
-              <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-900">Add New Product</h3>
-              <button
-                @click="showCreateModal = false"
-                class="text-gray-400 hover:text-gray-500 transition-colors p-1 md:p-2 rounded-full hover:bg-gray-100"
-              >
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <ProductForm
-              :loading="productStore.loading"
-              :error="productStore.error"
-              @submit="handleCreate"
-              @cancel="showCreateModal = false"
-            />
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <ModalWrapper v-model="showCreateModal" title="Add New Product">
+      <ProductForm
+        :loading="productStore.loading"
+        :error="productStore.error"
+        @submit="handleCreate"
+        @cancel="showCreateModal = false"
+      />
+    </ModalWrapper>
 
-    <Teleport to="body">
-      <div v-if="showEditModal && editingProduct" class="fixed top-0 left-0 w-screen h-screen bg-gray-600 bg-opacity-50 z-[9999] flex items-center justify-center p-4 sm:p-6 md:p-8">
-        <div class="relative bg-white rounded-lg shadow-xl border-2 border-gray-200 w-[90%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg max-h-[85vh] overflow-y-auto">
-          <div class="p-4 sm:p-5 md:p-6">
-            <div class="flex justify-between items-center mb-4 sm:mb-5 md:mb-6">
-              <h3 class="text-base sm:text-lg md:text-xl font-medium text-gray-900">Edit Product</h3>
-              <button
-                @click="showEditModal = false"
-                class="text-gray-400 hover:text-gray-500 transition-colors p-1 md:p-2 rounded-full hover:bg-gray-100"
-              >
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <ProductForm
-              :product="editingProduct"
-              :loading="productStore.loading"
-              :error="productStore.error"
-              @submit="handleUpdate"
-              @cancel="showEditModal = false"
-            />
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <ModalWrapper v-model="showEditModal" title="Edit Product">
+      <ProductForm
+        :product="editingProduct"
+        :loading="productStore.loading"
+        :error="productStore.error"
+        @submit="handleUpdate"
+        @cancel="showEditModal = false"
+      />
+    </ModalWrapper>
+
+    <ConfirmDialog
+      v-model="showDeleteDialog"
+      title="Delete Product"
+      :message="`Are you sure you want to delete '${productToDelete?.name}'? This action cannot be undone.`"
+      confirm-text="Delete"
+      :loading="deleting"
+      @confirm="confirmDelete"
+    />
   </div>
 </template>
 
@@ -178,16 +165,23 @@ import { useUserStore } from '../../stores/userStore'
 import Table from '../../components/Table.vue'
 import ProductForm from '../../components/ProductForm.vue'
 import Pagination from '../../components/Pagination.vue'
-import { getDefaultCurrency } from '../../utils/supabase'
+import EmptyState from '../../components/EmptyState.vue'
+import ModalWrapper from '../../components/ModalWrapper.vue'
+import ConfirmDialog from '../../components/ConfirmDialog.vue'
+import { formatCurrency } from '../../utils/formatters'
+import { ITEMS_PER_PAGE } from '../../utils/constants'
 
 const productStore = useProductStore()
 const userStore = useUserStore()
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
+const showDeleteDialog = ref(false)
 const editingProduct = ref(null)
+const productToDelete = ref(null)
+const deleting = ref(false)
 const searchQuery = ref('')
 const currentPage = ref(1)
-const itemsPerPage = 10
+const itemsPerPage = ITEMS_PER_PAGE
 
 const filteredProducts = computed(() => {
   let products = productStore.products
@@ -225,30 +219,20 @@ watch(searchQuery, () => {
   currentPage.value = 1
 })
 
-const currency = getDefaultCurrency()
-
 const columns = computed(() => {
   const baseColumns = [
     { key: 'name', label: 'Name' },
     { key: 'quantity', label: 'Quantity' },
   ]
-  
-  // Only show buying_price for admins
+
   if (userStore.isAdmin) {
     baseColumns.push({ key: 'buying_price', label: 'Price', type: 'currency' })
   }
-  
+
   baseColumns.push({ key: 'actions', label: 'Actions' })
-  
+
   return baseColumns
 })
-
-function formatCurrency(value) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency === 'UGX' ? 'UGX' : 'USD',
-  }).format(value)
-}
 
 onMounted(() => {
   productStore.fetchProducts()
@@ -280,10 +264,18 @@ async function handleUpdate(productData) {
   }
 }
 
-async function handleDelete(id) {
-  if (confirm('Are you sure you want to delete this product?')) {
-    await productStore.deleteProduct(id)
-  }
+function handleDelete(product) {
+  productToDelete.value = product
+  showDeleteDialog.value = true
+}
+
+async function confirmDelete() {
+  if (!productToDelete.value) return
+  deleting.value = true
+  await productStore.deleteProduct(productToDelete.value.id)
+  deleting.value = false
+  showDeleteDialog.value = false
+  productToDelete.value = null
 }
 </script>
 
