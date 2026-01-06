@@ -20,30 +20,46 @@
 
     <!-- Tabs -->
     <div class="border-b border-gray-200">
-      <nav class="-mb-px flex space-x-8">
-        <button
-          v-for="tab in tabs"
-          :key="tab.id"
-          @click="activeTab = tab.id"
-          :class="[
-            activeTab === tab.id
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors'
-          ]"
-        >
-          {{ tab.name }}
-          <span
-            v-if="tab.count > 0"
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <nav class="-mb-px flex space-x-8">
+          <button
+            v-for="tab in tabs"
+            :key="tab.id"
+            @click="activeTab = tab.id"
             :class="[
-              activeTab === tab.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-900',
-              'ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium inline-block'
+              activeTab === tab.id
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+              'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors'
             ]"
           >
-            {{ tab.count }}
-          </span>
-        </button>
-      </nav>
+            {{ tab.name }}
+            <span
+              v-if="tab.count > 0"
+              :class="[
+                activeTab === tab.id ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-900',
+                'ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium inline-block'
+              ]"
+            >
+              {{ tab.count }}
+            </span>
+          </button>
+        </nav>
+
+        <!-- Status Filter for Creditors -->
+        <div v-if="activeTab === 'creditors'" class="flex items-center gap-2 pb-4 sm:pb-0">
+          <label class="text-sm font-medium text-gray-700">Filter by Status:</label>
+          <select
+            v-model="statusFilter"
+            class="border-2 border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="partial">Partial</option>
+            <option value="paid">Paid</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <!-- Summary Cards -->
@@ -270,13 +286,21 @@ const financeStore = useFinanceStore()
 const { showToast } = useToast()
 
 const activeTab = ref('debtors')
+const statusFilter = ref('all')
 const tabs = computed(() => [
   { id: 'debtors', name: 'Debtors', count: financeStore.debtors.length },
   { id: 'creditors', name: 'Creditors', count: financeStore.creditors.length }
 ])
 
 const currentData = computed(() => {
-  return activeTab.value === 'debtors' ? financeStore.debtors : financeStore.creditors
+  const data = activeTab.value === 'debtors' ? financeStore.debtors : financeStore.creditors
+
+  // Apply status filter only for creditors
+  if (activeTab.value === 'creditors' && statusFilter.value !== 'all') {
+    return data.filter(item => item.status === statusFilter.value)
+  }
+
+  return data
 })
 
 const totalDebtorsRemaining = computed(() => {

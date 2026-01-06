@@ -80,16 +80,25 @@
               <p class="text-sm text-gray-700 mt-1">{{ item.description }}</p>
             </div>
           </div>
-          <div class="p-6 bg-gray-50 border-t border-gray-100">
+          <div class="p-6 bg-gray-50 border-t border-gray-100 space-y-2">
             <button
-              @click="showPaymentModal = true"
-              :disabled="item.status === 'paid'"
-              class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors disabled:opacity-50"
+              @click="openPaymentModal(false)"
+              class="w-full inline-flex justify-center items-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
             >
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Record Payment
+            </button>
+            <button
+              v-if="type === 'creditor'"
+              @click="openPaymentModal(true)"
+              class="w-full inline-flex justify-center items-center px-4 py-3 border border-blue-600 rounded-lg shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            >
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Add More Debt
             </button>
           </div>
         </div>
@@ -204,41 +213,63 @@
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <h3 class="text-lg leading-6 font-bold text-gray-900 mb-6">Record Payment</h3>
-            
-            <div class="bg-blue-50 p-4 rounded-lg mb-6 flex justify-between items-center">
+            <h3 class="text-lg leading-6 font-bold text-gray-900 mb-6">
+              {{ isAddingDebt ? 'Add More Debt' : 'Record Payment' }}
+            </h3>
+
+            <div v-if="!isAddingDebt" class="bg-blue-50 p-4 rounded-lg mb-6 flex justify-between items-center">
               <div>
                 <p class="text-xs text-blue-600 font-medium uppercase">Remaining Balance</p>
                 <p class="text-xl font-bold text-blue-900">{{ formatCurrency(item?.remaining_amount) }}</p>
               </div>
             </div>
 
+            <div v-if="isAddingDebt" class="bg-orange-50 p-4 rounded-lg mb-6">
+              <p class="text-xs text-orange-600 font-medium uppercase mb-2">Current Status</p>
+              <div class="space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-orange-900">Total Amount:</span>
+                  <span class="text-sm font-bold text-orange-900">{{ formatCurrency(item?.total_amount) }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-orange-900">Remaining Balance:</span>
+                  <span class="text-sm font-bold text-orange-900">{{ formatCurrency(item?.remaining_amount) }}</span>
+                </div>
+              </div>
+              <p class="text-xs text-orange-700 mt-2">Adding more debt will increase both the total amount and remaining balance.</p>
+            </div>
+
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Payment Amount</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  {{ isAddingDebt ? 'Additional Debt Amount' : 'Payment Amount' }}
+                </label>
                 <div class="relative rounded-md shadow-sm">
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <span class="text-gray-500 sm:text-sm">{{ currencySymbol }}</span>
                   </div>
-                  <input v-model.number="paymentForm.amount" type="number" class="block w-full pl-12 border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" />
+                  <input v-model.number="paymentForm.amount" type="number" class="block w-full pl-12 border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" placeholder="0.00" />
                 </div>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Payment Date</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
                 <input v-model="paymentForm.payment_date" type="datetime-local" class="block w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                <textarea v-model="paymentForm.notes" rows="2" class="block w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" placeholder="Optional notes"></textarea>
+                <textarea v-model="paymentForm.notes" rows="2" class="block w-full border-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm px-3 py-2" :placeholder="isAddingDebt ? 'e.g., Purchased more products' : 'Optional notes'"></textarea>
               </div>
             </div>
           </div>
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-3">
-            <button @click="submitPayment" :disabled="savingPayment" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 transition-colors">
+            <button @click="submitPayment" :disabled="savingPayment" :class="[
+              isAddingDebt ? 'bg-orange-600 hover:bg-orange-700 focus:ring-orange-500' : 'bg-green-600 hover:bg-green-700 focus:ring-green-500',
+              'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 transition-colors'
+            ]">
               <span v-if="savingPayment" class="animate-spin mr-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-              Submit Payment
+              {{ isAddingDebt ? 'Add Debt' : 'Submit Payment' }}
             </button>
-            <button @click="showPaymentModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+            <button @click="closePaymentModal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
               Cancel
             </button>
           </div>
@@ -315,6 +346,7 @@ const editForm = ref({
 // Payment Modal
 const showPaymentModal = ref(false)
 const savingPayment = ref(false)
+const isAddingDebt = ref(false)
 const paymentForm = ref({
   amount: 0,
   payment_date: new Date().toISOString().slice(0, 16),
@@ -388,32 +420,84 @@ async function updateEntry() {
   }
 }
 
+function openPaymentModal(addingDebt = false) {
+  isAddingDebt.value = addingDebt
+  paymentForm.value = {
+    amount: addingDebt ? 0 : item.value.remaining_amount,
+    payment_date: new Date().toISOString().slice(0, 16),
+    notes: ''
+  }
+  showPaymentModal.value = true
+}
+
+function closePaymentModal() {
+  showPaymentModal.value = false
+  isAddingDebt.value = false
+}
+
 async function submitPayment() {
   if (paymentForm.value.amount <= 0) {
     showToast('Amount must be greater than zero.', 'error')
     return
   }
-  if (paymentForm.value.amount > item.value.remaining_amount) {
-    showToast('Amount exceeds remaining balance.', 'error')
-    return
-  }
 
-  savingPayment.value = true
-  try {
-    const paymentData = {
-      amount: paymentForm.value.amount,
-      payment_date: paymentForm.value.payment_date,
-      notes: paymentForm.value.notes,
-      [type === 'debtor' ? 'debtor_id' : 'creditor_id']: id
+  if (isAddingDebt.value) {
+    // Adding more debt to a creditor
+    savingPayment.value = true
+    try {
+      const newTotalAmount = Number(item.value.total_amount) + Number(paymentForm.value.amount)
+      const newRemainingAmount = Number(item.value.remaining_amount) + Number(paymentForm.value.amount)
+
+      // Determine status based on remaining amount
+      const newStatus = newRemainingAmount <= 0 ? 'paid' : (newRemainingAmount < newTotalAmount ? 'partial' : 'pending')
+
+      await financeStore.updateCreditor(id, {
+        total_amount: newTotalAmount,
+        remaining_amount: newRemainingAmount,
+        status: newStatus
+      })
+
+      // Record the debt addition as a negative payment (or create a transaction record)
+      const paymentData = {
+        amount: -paymentForm.value.amount, // Negative to indicate debt increase
+        payment_date: paymentForm.value.payment_date,
+        notes: paymentForm.value.notes || 'Additional debt added',
+        creditor_id: id
+      }
+      await financeStore.addPayment(paymentData, 'creditor')
+
+      showToast('Debt added successfully!', 'success')
+      closePaymentModal()
+      await fetchData()
+    } catch (error) {
+      showToast(error.message || 'Failed to add debt.', 'error')
+    } finally {
+      savingPayment.value = false
     }
-    await financeStore.addPayment(paymentData, type)
-    showToast('Payment recorded!', 'success')
-    showPaymentModal.value = false
-    await fetchData()
-  } catch (error) {
-    showToast(error.message || 'Failed to record payment.', 'error')
-  } finally {
-    savingPayment.value = false
+  } else {
+    // Recording a payment
+    if (paymentForm.value.amount > item.value.remaining_amount) {
+      showToast('Amount exceeds remaining balance.', 'error')
+      return
+    }
+
+    savingPayment.value = true
+    try {
+      const paymentData = {
+        amount: paymentForm.value.amount,
+        payment_date: paymentForm.value.payment_date,
+        notes: paymentForm.value.notes,
+        [type === 'debtor' ? 'debtor_id' : 'creditor_id']: id
+      }
+      await financeStore.addPayment(paymentData, type)
+      showToast('Payment recorded!', 'success')
+      closePaymentModal()
+      await fetchData()
+    } catch (error) {
+      showToast(error.message || 'Failed to record payment.', 'error')
+    } finally {
+      savingPayment.value = false
+    }
   }
 }
 
