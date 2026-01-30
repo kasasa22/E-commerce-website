@@ -122,11 +122,21 @@ const emit = defineEmits(['submit', 'cancel'])
 
 const productStore = useProductStore()
 
+function getCurrentLocalDateTime() {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const hours = String(now.getHours()).padStart(2, '0')
+  const minutes = String(now.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
 const formData = ref({
   product_id: '',
   quantity: 0,
   selling_price: 0,
-  sold_at: new Date().toISOString().slice(0, 16),
+  sold_at: getCurrentLocalDateTime(),
 })
 
 // Initialize form data when initialData changes
@@ -143,7 +153,7 @@ watch(() => props.initialData, (newData) => {
       product_id: '',
       quantity: 0,
       selling_price: 0,
-      sold_at: new Date().toISOString().slice(0, 16),
+      sold_at: getCurrentLocalDateTime(),
     }
   }
 }, { immediate: true })

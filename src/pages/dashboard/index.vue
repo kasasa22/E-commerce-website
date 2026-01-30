@@ -186,7 +186,7 @@
                     {{ sale.products?.name || 'Unknown Product' }}
                   </p>
                   <p class="text-xs text-gray-500">
-                    {{ new Date(sale.sold_at).toLocaleTimeString() }}
+                    {{ new Date(sale.sold_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) }}
                   </p>
                 </div>
                 <div class="text-right">
