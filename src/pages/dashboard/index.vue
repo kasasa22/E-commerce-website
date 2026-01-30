@@ -9,7 +9,7 @@
 
     <div v-else class="space-y-6">
       <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div v-if="userStore.isAdmin" class="bg-white overflow-hidden shadow rounded-lg">
           <div class="p-3 sm:p-4 md:p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -65,7 +65,7 @@
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div v-if="userStore.isAdmin" class="bg-white overflow-hidden shadow rounded-lg">
           <div class="p-3 sm:p-4 md:p-5">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -202,7 +202,7 @@
           </div>
         </div>
 
-        <div class="bg-white shadow rounded-lg">
+        <div v-if="userStore.isAdmin" class="bg-white shadow rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Low Stock Alerts</h3>
             <div v-if="lowStockProducts.length === 0" class="text-sm text-gray-500">
@@ -226,8 +226,8 @@
         </div>
       </div>
 
-      <!-- Admin Only: Finance Overview -->
-      <div v-if="userStore.isAdmin" class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <!-- Today's Expenses & Bank Deposits -->
+      <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <div class="bg-white shadow rounded-lg">
           <div class="px-4 py-5 sm:p-6">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Today's Expenses</h3>
@@ -501,10 +501,10 @@ async function loadBalances() {
 onMounted(async () => {
   productStore.fetchProducts()
   salesStore.fetchSales()
+  expensesBankingStore.fetchExpenses()
+  expensesBankingStore.fetchDeposits()
 
   if (userStore.isAdmin) {
-    expensesBankingStore.fetchExpenses()
-    expensesBankingStore.fetchDeposits()
     await expensesBankingStore.fetchDailyBalances()
     await financeStore.fetchDebtors()
     await financeStore.fetchCreditors()

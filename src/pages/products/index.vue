@@ -87,18 +87,23 @@
           class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm"
         >
           <div class="space-y-3">
-            <div>
-              <h3 class="text-base font-semibold text-gray-900 mb-3">{{ product.name }}</h3>
+            <div class="flex justify-between items-start">
+              <h3 class="text-base font-semibold text-gray-900">{{ product.name }}</h3>
+              <p v-if="!userStore.isAdmin" class="text-sm font-medium text-gray-900">{{ formatCurrency(product.selling_price) }}</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+            <div v-if="userStore.isAdmin" class="grid grid-cols-3 gap-3 pt-2 border-t border-gray-100">
               <div>
                 <p class="text-xs text-gray-500">Quantity</p>
                 <p class="text-sm font-medium text-gray-900">{{ product.quantity }}</p>
               </div>
-              <div v-if="userStore.isAdmin">
-                <p class="text-xs text-gray-500">Price</p>
+              <div>
+                <p class="text-xs text-gray-500">Buying Price</p>
                 <p class="text-sm font-medium text-gray-900">{{ formatCurrency(product.buying_price) }}</p>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Selling Price</p>
+                <p class="text-sm font-medium text-gray-900">{{ formatCurrency(product.selling_price) }}</p>
               </div>
             </div>
 
@@ -222,14 +227,16 @@ watch(searchQuery, () => {
 const columns = computed(() => {
   const baseColumns = [
     { key: 'name', label: 'Name' },
-    { key: 'quantity', label: 'Quantity' },
   ]
 
   if (userStore.isAdmin) {
-    baseColumns.push({ key: 'buying_price', label: 'Price', type: 'currency' })
+    baseColumns.push({ key: 'quantity', label: 'Quantity' })
+    baseColumns.push({ key: 'buying_price', label: 'Buying Price', type: 'currency' })
+    baseColumns.push({ key: 'selling_price', label: 'Selling Price', type: 'currency' })
+    baseColumns.push({ key: 'actions', label: 'Actions' })
+  } else {
+    baseColumns.push({ key: 'selling_price', label: 'Selling Price', type: 'currency' })
   }
-
-  baseColumns.push({ key: 'actions', label: 'Actions' })
 
   return baseColumns
 })
