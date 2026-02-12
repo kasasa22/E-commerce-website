@@ -16,7 +16,7 @@
           :key="product.id"
           :value="product.id"
         >
-          {{ product.name }} - Stock: {{ product.quantity }}
+          {{ product.name }}<template v-if="userStore.isAdmin"> - Stock: {{ product.quantity }}</template>
         </option>
       </select>
     </div>
@@ -35,7 +35,7 @@
         :max="maxQuantity"
         class="block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
       />
-      <p v-if="selectedProduct" class="mt-1 text-xs text-gray-500">
+      <p v-if="selectedProduct && userStore.isAdmin" class="mt-1 text-xs text-gray-500">
         Available: {{ maxQuantity }} {{ maxQuantity > 1 ? 'units' : 'unit' }}
       </p>
     </div>
@@ -68,7 +68,7 @@
       />
     </div>
 
-    <div v-if="selectedProduct && formData.quantity && formData.selling_price" class="p-3 bg-gray-50 rounded-md border border-gray-200">
+    <div v-if="userStore.isAdmin && selectedProduct && formData.quantity && formData.selling_price" class="p-3 bg-gray-50 rounded-md border border-gray-200">
       <p class="text-xs sm:text-sm text-gray-700">
         <strong>Estimated Profit:</strong>
         {{ formatCurrency((formData.selling_price - selectedProduct.buying_price) * formData.quantity) }}
@@ -101,6 +101,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useProductStore } from '../stores/productStore'
+import { useUserStore } from '../stores/userStore'
 import { formatCurrency } from '../utils/formatters'
 
 const props = defineProps({
@@ -121,6 +122,7 @@ const props = defineProps({
 const emit = defineEmits(['submit', 'cancel'])
 
 const productStore = useProductStore()
+const userStore = useUserStore()
 
 function getCurrentLocalDateTime() {
   const now = new Date()
