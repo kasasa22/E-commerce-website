@@ -9,54 +9,60 @@
 
     <div v-else class="space-y-6">
       <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-        <div v-if="userStore.isAdmin" class="bg-white overflow-hidden shadow rounded-lg">
-          <div class="p-3 sm:p-4 md:p-5">
+        <div v-if="userStore.isAdmin" class="bg-gradient-to-br from-blue-500 to-blue-600 overflow-hidden shadow-lg rounded-xl hover:shadow-xl transition-shadow">
+          <div class="p-4 sm:p-5 md:p-6">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                  <span class="text-white text-xs sm:text-sm font-bold">P</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
                 </div>
               </div>
-              <div class="ml-2 sm:ml-3 md:ml-5 w-0 flex-1">
+              <div class="ml-4 w-0 flex-1">
                 <dl>
-                  <dt class="text-xs sm:text-sm font-medium text-gray-700 truncate">Total Products</dt>
-                  <dd class="text-base sm:text-lg font-medium text-gray-900">{{ productStore.products.length }}</dd>
+                  <dt class="text-xs sm:text-sm font-semibold text-blue-100 truncate">Total Products</dt>
+                  <dd class="text-xl sm:text-2xl font-bold text-white">{{ productStore.products.length }}</dd>
                 </dl>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-          <div class="p-3 sm:p-4 md:p-5">
+        <div class="bg-gradient-to-br from-green-500 to-green-600 overflow-hidden shadow-lg rounded-xl hover:shadow-xl transition-shadow">
+          <div class="p-4 sm:p-5 md:p-6">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-green-500 rounded-md flex items-center justify-center">
-                  <span class="text-white text-xs sm:text-sm font-bold">S</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
                 </div>
               </div>
-              <div class="ml-2 sm:ml-3 md:ml-5 w-0 flex-1">
+              <div class="ml-4 w-0 flex-1">
                 <dl>
-                  <dt class="text-xs sm:text-sm font-medium text-gray-700 truncate">Total Sales</dt>
-                  <dd class="text-base sm:text-lg font-medium text-gray-900">{{ dailySalesCount }}</dd>
+                  <dt class="text-xs sm:text-sm font-semibold text-green-100 truncate">Total Sales</dt>
+                  <dd class="text-xl sm:text-2xl font-bold text-white">{{ dailySalesCount }}</dd>
                 </dl>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-          <div class="p-3 sm:p-4 md:p-5">
+        <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 overflow-hidden shadow-lg rounded-xl hover:shadow-xl transition-shadow">
+          <div class="p-4 sm:p-5 md:p-6">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                  <span class="text-white text-xs sm:text-sm font-bold">$</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                 </div>
               </div>
-              <div class="ml-2 sm:ml-3 md:ml-5 w-0 flex-1">
+              <div class="ml-4 w-0 flex-1">
                 <dl>
-                  <dt class="text-xs sm:text-sm font-medium text-gray-700 truncate">Today's Revenue</dt>
-                  <dd class="text-base sm:text-lg font-medium text-gray-900">
+                  <dt class="text-xs sm:text-sm font-semibold text-yellow-100 truncate">Today's Revenue</dt>
+                  <dd class="text-lg sm:text-xl font-bold text-white truncate">
                     {{ formatCurrency(dailySalesAmount) }}
                   </dd>
                 </dl>
@@ -65,18 +71,20 @@
           </div>
         </div>
 
-        <div v-if="userStore.isAdmin" class="bg-white overflow-hidden shadow rounded-lg">
-          <div class="p-3 sm:p-4 md:p-5">
+        <div v-if="userStore.isAdmin" class="bg-gradient-to-br from-red-500 to-red-600 overflow-hidden shadow-lg rounded-xl hover:shadow-xl transition-shadow">
+          <div class="p-4 sm:p-5 md:p-6">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-red-500 rounded-md flex items-center justify-center">
-                  <span class="text-white text-xs sm:text-sm font-bold">!</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
                 </div>
               </div>
-              <div class="ml-2 sm:ml-3 md:ml-5 w-0 flex-1">
+              <div class="ml-4 w-0 flex-1">
                 <dl>
-                  <dt class="text-xs sm:text-sm font-medium text-gray-700 truncate">Low Stock Items</dt>
-                  <dd class="text-base sm:text-lg font-medium text-gray-900">{{ lowStockCount }}</dd>
+                  <dt class="text-xs sm:text-sm font-semibold text-red-100 truncate">Low Stock Items</dt>
+                  <dd class="text-xl sm:text-2xl font-bold text-white">{{ lowStockCount }}</dd>
                 </dl>
               </div>
             </div>
@@ -85,48 +93,48 @@
       </div>
 
       <!-- Admin Only: Today's Cash Flow Summary -->
-      <div v-if="userStore.isAdmin" class="bg-white shadow rounded-lg">
-        <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
-          <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Today's Cash Flow</h3>
-          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
-            <div class="bg-blue-50 px-3 py-3 rounded-lg border border-blue-200">
-              <dt class="text-xs font-medium text-blue-600">Opening Balance</dt>
-              <dd class="mt-1 text-lg font-semibold text-blue-700">{{ formatCurrency(balanceBD) }}</dd>
+      <div v-if="userStore.isAdmin" class="bg-white shadow-lg rounded-xl border border-gray-200">
+        <div class="px-4 py-5 sm:px-6 md:p-8">
+          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5">Today's Cash Flow</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 sm:gap-4">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 px-3 py-4 rounded-xl border-2 border-blue-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs font-semibold text-blue-700">Opening Balance</dt>
+              <dd class="mt-2 text-base sm:text-lg font-bold text-blue-900">{{ formatCurrency(balanceBD) }}</dd>
             </div>
-            <div class="bg-green-50 px-3 py-3 rounded-lg border border-green-200">
-              <dt class="text-xs font-medium text-green-600">Total Sales</dt>
-              <dd class="mt-1 text-lg font-semibold text-green-700">{{ formatCurrency(dailySalesAmount) }}</dd>
+            <div class="bg-gradient-to-br from-green-50 to-green-100 px-3 py-4 rounded-xl border-2 border-green-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs font-semibold text-green-700">Total Sales</dt>
+              <dd class="mt-2 text-base sm:text-lg font-bold text-green-900">{{ formatCurrency(dailySalesAmount) }}</dd>
             </div>
-            <div class="bg-purple-50 px-3 py-3 rounded-lg border border-purple-200">
-              <dt class="text-xs font-medium text-purple-600">Debts Collected</dt>
-              <dd class="mt-1 text-lg font-semibold text-purple-700">{{ formatCurrency(dailyDebtsCollected) }}</dd>
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 px-3 py-4 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs font-semibold text-purple-700">Debts Collected</dt>
+              <dd class="mt-2 text-base sm:text-lg font-bold text-purple-900">{{ formatCurrency(dailyDebtsCollected) }}</dd>
             </div>
-            <div class="bg-red-50 px-3 py-3 rounded-lg border border-red-200">
-              <dt class="text-xs font-medium text-red-600">Expenses</dt>
-              <dd class="mt-1 text-lg font-semibold text-red-700">{{ formatCurrency(dailyExpenses) }}</dd>
+            <div class="bg-gradient-to-br from-red-50 to-red-100 px-3 py-4 rounded-xl border-2 border-red-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs font-semibold text-red-700">Expenses</dt>
+              <dd class="mt-2 text-base sm:text-lg font-bold text-red-900">{{ formatCurrency(dailyExpenses) }}</dd>
             </div>
-            <div class="bg-orange-50 px-3 py-3 rounded-lg border border-orange-200">
-              <dt class="text-xs font-medium text-orange-600">Creditors Paid</dt>
-              <dd class="mt-1 text-lg font-semibold text-orange-700">{{ formatCurrency(dailyCreditorsPaid) }}</dd>
+            <div class="bg-gradient-to-br from-orange-50 to-orange-100 px-3 py-4 rounded-xl border-2 border-orange-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs font-semibold text-orange-700">Creditors Paid</dt>
+              <dd class="mt-2 text-base sm:text-lg font-bold text-orange-900">{{ formatCurrency(dailyCreditorsPaid) }}</dd>
             </div>
-            <div class="bg-cyan-50 px-3 py-3 rounded-lg border border-cyan-200">
-              <dt class="text-xs font-medium text-cyan-600">Bank Deposits</dt>
-              <dd class="mt-1 text-lg font-semibold text-cyan-700">{{ formatCurrency(dailyBankDeposits) }}</dd>
+            <div class="bg-gradient-to-br from-cyan-50 to-cyan-100 px-3 py-4 rounded-xl border-2 border-cyan-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs font-semibold text-cyan-700">Bank Deposits</dt>
+              <dd class="mt-2 text-base sm:text-lg font-bold text-cyan-900">{{ formatCurrency(dailyBankDeposits) }}</dd>
             </div>
-            <div class="bg-yellow-50 px-3 py-3 rounded-lg border border-yellow-200">
-              <dt class="text-xs font-medium text-yellow-600">New Debts</dt>
-              <dd class="mt-1 text-lg font-semibold text-yellow-700">{{ formatCurrency(dailyNewDebts) }}</dd>
+            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 px-3 py-4 rounded-xl border-2 border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs font-semibold text-yellow-700">New Debts</dt>
+              <dd class="mt-2 text-base sm:text-lg font-bold text-yellow-900">{{ formatCurrency(dailyNewDebts) }}</dd>
             </div>
           </div>
-          <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="mt-6 pt-6 border-t-2 border-gray-200">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="bg-indigo-50 px-4 py-4 rounded-lg border border-indigo-200">
-                <dt class="text-sm font-medium text-indigo-600">Expected Cash</dt>
-                <dd class="mt-1 text-xl font-bold text-indigo-700">{{ formatCurrency(expectedCash) }}</dd>
+              <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 px-5 py-5 rounded-xl border-2 border-indigo-300 shadow-md">
+                <dt class="text-sm font-semibold text-indigo-700">Expected Cash</dt>
+                <dd class="mt-2 text-2xl font-bold text-indigo-900">{{ formatCurrency(expectedCash) }}</dd>
               </div>
-              <div class="bg-teal-50 px-4 py-4 rounded-lg border border-teal-200">
-                <dt class="text-sm font-medium text-teal-600">Closing Balance</dt>
-                <dd class="mt-1 text-xl font-bold text-teal-700">
+              <div class="bg-gradient-to-br from-teal-50 to-teal-100 px-5 py-5 rounded-xl border-2 border-teal-300 shadow-md">
+                <dt class="text-sm font-semibold text-teal-700">Closing Balance</dt>
+                <dd class="mt-2 text-2xl font-bold text-teal-900">
                   {{ balanceCDSaved !== null ? formatCurrency(balanceCDSaved) : 'Not set' }}
                 </dd>
               </div>
@@ -168,32 +176,32 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-4 py-5 sm:p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Today's Sales</h3>
-            <div v-if="dailySales.length === 0" class="text-sm text-gray-500">
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div class="bg-white shadow-lg rounded-xl border border-gray-200">
+          <div class="px-5 py-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-5">Today's Sales</h3>
+            <div v-if="dailySales.length === 0" class="text-center py-8 text-sm text-gray-500">
               No sales today
             </div>
-            <div v-else class="space-y-3 max-h-96 overflow-y-auto">
+            <div v-else class="space-y-2 max-h-96 overflow-y-auto">
               <div
                 v-for="sale in dailySales"
                 :key="sale.id"
-                class="flex justify-between items-center py-2 border-b border-gray-200"
+                class="flex justify-between items-center py-3 px-4 rounded-lg hover:bg-gray-50 border border-gray-100 transition-colors"
               >
                 <div>
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-semibold text-gray-900">
                     {{ sale.products?.name || 'Unknown Product' }}
                   </p>
-                  <p class="text-xs text-gray-500">
+                  <p class="text-xs font-medium text-gray-500 mt-0.5">
                     {{ new Date(sale.sold_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) }}
                   </p>
                 </div>
                 <div class="text-right">
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-bold text-gray-900">
                     {{ formatCurrency(sale.selling_price * sale.quantity) }}
                   </p>
-                  <p v-if="userStore.isAdmin" class="text-xs" :class="sale.profit >= 0 ? 'text-green-600' : 'text-red-600'">
+                  <p v-if="userStore.isAdmin" class="text-xs font-semibold mt-0.5" :class="sale.profit >= 0 ? 'text-green-600' : 'text-red-600'">
                     {{ formatCurrency(sale.profit) }}
                   </p>
                 </div>
@@ -202,23 +210,23 @@
           </div>
         </div>
 
-        <div v-if="userStore.isAdmin" class="bg-white shadow rounded-lg">
-          <div class="px-4 py-5 sm:p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Low Stock Alerts</h3>
-            <div v-if="lowStockProducts.length === 0" class="text-sm text-gray-500">
+        <div v-if="userStore.isAdmin" class="bg-white shadow-lg rounded-xl border border-gray-200">
+          <div class="px-5 py-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-5">Low Stock Alerts</h3>
+            <div v-if="lowStockProducts.length === 0" class="text-center py-8 text-sm text-gray-500">
               All products are well stocked
             </div>
-            <div v-else class="space-y-3 max-h-96 overflow-y-auto">
+            <div v-else class="space-y-2 max-h-96 overflow-y-auto">
               <div
                 v-for="product in lowStockProducts"
                 :key="product.id"
-                class="flex justify-between items-center py-2 border-b border-gray-200"
+                class="flex justify-between items-center py-3 px-4 rounded-lg hover:bg-red-50 border border-red-100 transition-colors"
               >
                 <div>
-                  <p class="text-sm font-medium text-gray-900">{{ product.name }}</p>
+                  <p class="text-sm font-semibold text-gray-900">{{ product.name }}</p>
                 </div>
                 <div class="text-right">
-                  <p class="text-sm font-medium text-red-600">{{ product.quantity }} left</p>
+                  <p class="text-sm font-bold text-red-600">{{ product.quantity }} left</p>
                 </div>
               </div>
             </div>
@@ -227,43 +235,43 @@
       </div>
 
       <!-- Today's Expenses & Bank Deposits -->
-      <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-4 py-5 sm:p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Today's Expenses</h3>
-            <div v-if="dailyExpensesList.length === 0" class="text-sm text-gray-500">
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div class="bg-white shadow-lg rounded-xl border border-gray-200">
+          <div class="px-5 py-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-5">Today's Expenses</h3>
+            <div v-if="dailyExpensesList.length === 0" class="text-center py-8 text-sm text-gray-500">
               No expenses today
             </div>
-            <div v-else class="space-y-3 max-h-64 overflow-y-auto">
+            <div v-else class="space-y-2 max-h-64 overflow-y-auto">
               <div
                 v-for="expense in dailyExpensesList"
                 :key="expense.id"
-                class="flex justify-between items-center py-2 border-b border-gray-200"
+                class="flex justify-between items-center py-3 px-4 rounded-lg hover:bg-red-50 border border-gray-100 transition-colors"
               >
-                <p class="text-sm font-medium text-gray-900">{{ expense.title }}</p>
-                <p class="text-sm font-medium text-red-600">{{ formatCurrency(expense.amount) }}</p>
+                <p class="text-sm font-semibold text-gray-900">{{ expense.title }}</p>
+                <p class="text-sm font-bold text-red-600">{{ formatCurrency(expense.amount) }}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-4 py-5 sm:p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Today's Bank Deposits</h3>
-            <div v-if="dailyBankDepositsList.length === 0" class="text-sm text-gray-500">
+        <div class="bg-white shadow-lg rounded-xl border border-gray-200">
+          <div class="px-5 py-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-5">Today's Bank Deposits</h3>
+            <div v-if="dailyBankDepositsList.length === 0" class="text-center py-8 text-sm text-gray-500">
               No bank deposits today
             </div>
-            <div v-else class="space-y-3 max-h-64 overflow-y-auto">
+            <div v-else class="space-y-2 max-h-64 overflow-y-auto">
               <div
                 v-for="deposit in dailyBankDepositsList"
                 :key="deposit.id"
-                class="flex justify-between items-center py-2 border-b border-gray-200"
+                class="flex justify-between items-center py-3 px-4 rounded-lg hover:bg-cyan-50 border border-gray-100 transition-colors"
               >
                 <div>
-                  <p class="text-sm font-medium text-gray-900">{{ deposit.banks?.name }}</p>
-                  <p class="text-xs text-gray-500">{{ deposit.agent_name }}</p>
+                  <p class="text-sm font-semibold text-gray-900">{{ deposit.banks?.name }}</p>
+                  <p class="text-xs font-medium text-gray-500">{{ deposit.agent_name }}</p>
                 </div>
-                <p class="text-sm font-medium text-cyan-600">{{ formatCurrency(deposit.amount) }}</p>
+                <p class="text-sm font-bold text-cyan-600">{{ formatCurrency(deposit.amount) }}</p>
               </div>
             </div>
           </div>
@@ -271,73 +279,73 @@
       </div>
 
       <!-- Admin Only: Debtors & Creditors Summary -->
-      <div v-if="userStore.isAdmin" class="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-4 py-5 sm:p-6">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-medium text-gray-900">Total Debtors Owed</h3>
+      <div v-if="userStore.isAdmin" class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div class="bg-white shadow-lg rounded-xl border border-gray-200">
+          <div class="px-5 py-6">
+            <div class="flex justify-between items-center mb-5">
+              <h3 class="text-lg font-bold text-gray-900">Total Debtors Owed</h3>
               <span class="text-xl font-bold text-red-600">{{ formatCurrency(totalDebtorsRemaining) }}</span>
             </div>
             <div v-if="dailyNewDebtorsList.length > 0">
-              <p class="text-sm font-medium text-gray-700 mb-2">New Debtors Today:</p>
+              <p class="text-sm font-semibold text-gray-700 mb-3">New Debtors Today:</p>
               <div class="space-y-2 max-h-48 overflow-y-auto">
                 <div
                   v-for="debtor in dailyNewDebtorsList"
                   :key="debtor.id"
-                  class="flex justify-between items-center py-2 border-b border-gray-200"
+                  class="flex justify-between items-center py-3 px-4 rounded-lg hover:bg-yellow-50 border border-gray-100 transition-colors"
                 >
-                  <p class="text-sm text-gray-900">{{ debtor.name }}</p>
-                  <p class="text-sm font-medium text-yellow-600">{{ formatCurrency(debtor.total_amount) }}</p>
+                  <p class="text-sm font-semibold text-gray-900">{{ debtor.name }}</p>
+                  <p class="text-sm font-bold text-yellow-600">{{ formatCurrency(debtor.total_amount) }}</p>
                 </div>
               </div>
             </div>
-            <div v-else class="text-sm text-gray-500">No new debtors today</div>
+            <div v-else class="text-center py-8 text-sm text-gray-500">No new debtors today</div>
           </div>
         </div>
 
-        <div class="bg-white shadow rounded-lg">
-          <div class="px-4 py-5 sm:p-6">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-medium text-gray-900">Total Owed to Creditors</h3>
+        <div class="bg-white shadow-lg rounded-xl border border-gray-200">
+          <div class="px-5 py-6">
+            <div class="flex justify-between items-center mb-5">
+              <h3 class="text-lg font-bold text-gray-900">Total Owed to Creditors</h3>
               <span class="text-xl font-bold text-orange-600">{{ formatCurrency(totalCreditorsRemaining) }}</span>
             </div>
             <div v-if="dailyCreditorsPaidList.length > 0">
-              <p class="text-sm font-medium text-gray-700 mb-2">Paid to Creditors Today:</p>
+              <p class="text-sm font-semibold text-gray-700 mb-3">Paid to Creditors Today:</p>
               <div class="space-y-2 max-h-48 overflow-y-auto">
                 <div
                   v-for="payment in dailyCreditorsPaidList"
                   :key="payment.id"
-                  class="flex justify-between items-center py-2 border-b border-gray-200"
+                  class="flex justify-between items-center py-3 px-4 rounded-lg hover:bg-orange-50 border border-gray-100 transition-colors"
                 >
-                  <p class="text-sm text-gray-900">{{ payment.creditors?.name }}</p>
-                  <p class="text-sm font-medium text-orange-600">{{ formatCurrency(payment.amount) }}</p>
+                  <p class="text-sm font-semibold text-gray-900">{{ payment.creditors?.name }}</p>
+                  <p class="text-sm font-bold text-orange-600">{{ formatCurrency(payment.amount) }}</p>
                 </div>
               </div>
             </div>
-            <div v-else class="text-sm text-gray-500">No payments to creditors today</div>
+            <div v-else class="text-center py-8 text-sm text-gray-500">No payments to creditors today</div>
           </div>
         </div>
       </div>
 
-      <div v-if="userStore.isAdmin" class="bg-white shadow rounded-lg">
-        <div class="px-3 py-4 sm:px-4 sm:py-5 md:p-6">
-          <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Profit Summary</h3>
-          <div class="grid grid-cols-1 gap-3 sm:gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg">
-              <dt class="text-xs sm:text-sm font-medium text-gray-500">Today's Profit</dt>
-              <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold" :class="salesStore.dailyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
+      <div v-if="userStore.isAdmin" class="bg-white shadow-lg rounded-xl border border-gray-200">
+        <div class="px-5 py-6 md:p-8">
+          <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-5">Profit Summary</h3>
+          <div class="grid grid-cols-1 gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 px-5 py-5 rounded-xl border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs sm:text-sm font-semibold text-gray-600">Today's Profit</dt>
+              <dd class="mt-2 text-xl sm:text-2xl md:text-3xl font-bold" :class="salesStore.dailyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
                 {{ formatCurrency(salesStore.dailyProfit) }}
               </dd>
             </div>
-            <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg">
-              <dt class="text-xs sm:text-sm font-medium text-gray-500">This Month's Profit</dt>
-              <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold" :class="salesStore.monthlyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 px-5 py-5 rounded-xl border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+              <dt class="text-xs sm:text-sm font-semibold text-gray-600">This Month's Profit</dt>
+              <dd class="mt-2 text-xl sm:text-2xl md:text-3xl font-bold" :class="salesStore.monthlyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
                 {{ formatCurrency(salesStore.monthlyProfit) }}
               </dd>
             </div>
-            <div class="bg-gray-50 px-3 py-3 sm:px-4 sm:py-4 md:px-4 md:py-5 rounded-lg sm:col-span-2 lg:col-span-1">
-              <dt class="text-xs sm:text-sm font-medium text-gray-500">This Year's Profit</dt>
-              <dd class="mt-1 text-lg sm:text-xl md:text-2xl font-semibold" :class="salesStore.yearlyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 px-5 py-5 rounded-xl border-2 border-gray-200 shadow-sm hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
+              <dt class="text-xs sm:text-sm font-semibold text-gray-600">This Year's Profit</dt>
+              <dd class="mt-2 text-xl sm:text-2xl md:text-3xl font-bold" :class="salesStore.yearlyProfit >= 0 ? 'text-green-600' : 'text-red-600'">
                 {{ formatCurrency(salesStore.yearlyProfit) }}
               </dd>
             </div>
