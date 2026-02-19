@@ -11,15 +11,15 @@
       </button>
     </div>
 
-    <div v-if="!productStore.loading && productStore.products.length > 0" class="mb-4">
+    <div v-if="!productStore.loading && productStore.products.length > 0" class="mb-6">
       <div class="relative">
         <input
           v-model="searchQuery"
           type="text"
           placeholder="Search products by name..."
-          class="block w-full sm:w-80 rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-4 py-2 pl-10"
+          class="block w-full sm:w-96 rounded-lg border-2 border-gray-300 shadow-md focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-3 pl-11 transition-all"
         />
-        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
@@ -53,25 +53,25 @@
       description="Try adjusting your search terms."
     />
 
-    <div v-else class="bg-white shadow overflow-hidden sm:rounded-md">
+    <div v-else class="bg-white shadow-lg overflow-hidden rounded-xl border border-gray-200">
       <div class="hidden md:block">
       <Table
         :columns="columns"
         :data="paginatedProducts"
       >
         <template #actions="{ row }">
-          <div class="flex space-x-2">
+          <div class="flex space-x-3">
             <button
               v-if="userStore.isAdmin"
               @click="handleEdit(row)"
-                class="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                class="text-blue-600 hover:text-blue-800 text-sm font-semibold hover:underline transition-colors"
             >
               Edit
             </button>
             <button
               v-if="userStore.isAdmin"
               @click="handleDelete(row)"
-                class="text-red-600 hover:text-red-900 text-sm font-medium"
+                class="text-red-600 hover:text-red-800 text-sm font-semibold hover:underline transition-colors"
             >
               Delete
             </button>
@@ -84,39 +84,39 @@
         <div
           v-for="product in paginatedProducts"
           :key="product.id"
-          class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm"
+          class="bg-white rounded-xl border-2 border-gray-200 p-5 shadow-md hover:shadow-lg transition-shadow"
         >
           <div class="space-y-3">
             <div class="flex justify-between items-start">
-              <h3 class="text-base font-semibold text-gray-900">{{ product.name }}</h3>
-              <p v-if="!userStore.isAdmin" class="text-sm font-medium text-gray-900">{{ formatCurrency(product.selling_price) }}</p>
+              <h3 class="text-base font-bold text-gray-900">{{ product.name }}</h3>
+              <p v-if="!userStore.isAdmin" class="text-sm font-semibold text-blue-600">{{ formatCurrency(product.selling_price) }}</p>
             </div>
 
-            <div v-if="userStore.isAdmin" class="grid grid-cols-3 gap-3 pt-2 border-t border-gray-100">
+            <div v-if="userStore.isAdmin" class="grid grid-cols-3 gap-3 pt-3 border-t-2 border-gray-100">
               <div>
-                <p class="text-xs text-gray-500">Quantity</p>
-                <p class="text-sm font-medium text-gray-900">{{ product.quantity }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Quantity</p>
+                <p class="text-sm font-bold text-gray-900 mt-1">{{ product.quantity }}</p>
               </div>
               <div>
-                <p class="text-xs text-gray-500">Buying Price</p>
-                <p class="text-sm font-medium text-gray-900">{{ formatCurrency(product.buying_price) }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Buying Price</p>
+                <p class="text-sm font-bold text-gray-900 mt-1">{{ formatCurrency(product.buying_price) }}</p>
               </div>
               <div>
-                <p class="text-xs text-gray-500">Selling Price</p>
-                <p class="text-sm font-medium text-gray-900">{{ formatCurrency(product.selling_price) }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Selling Price</p>
+                <p class="text-sm font-bold text-blue-600 mt-1">{{ formatCurrency(product.selling_price) }}</p>
               </div>
             </div>
 
-            <div v-if="userStore.isAdmin" class="flex space-x-2 pt-2 border-t border-gray-100">
+            <div v-if="userStore.isAdmin" class="flex space-x-2 pt-3 border-t-2 border-gray-100">
               <button
                 @click="handleEdit(product)"
-                class="flex-1 px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
+                class="flex-1 px-4 py-2.5 text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
               >
                 Edit
               </button>
               <button
                 @click="handleDelete(product)"
-                class="flex-1 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100"
+                class="flex-1 px-4 py-2.5 text-sm font-semibold text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
               >
                 Delete
               </button>
@@ -124,7 +124,7 @@
           </div>
         </div>
       </div>
-      
+
       <Pagination
         :current-page="currentPage"
         :total-items="filteredProducts.length"
