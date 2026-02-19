@@ -22,14 +22,14 @@
       <p class="text-sm text-red-800">{{ error }}</p>
     </div>
 
-    <div v-else class="bg-white shadow overflow-hidden sm:rounded-md">
+    <div v-else class="bg-white shadow-lg overflow-hidden rounded-xl border border-gray-200">
       <Table
         :columns="columns"
-        :data="users"
+        :data="paginatedUsers"
       >
         <template #role="{ row }">
           <span
-            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
             :class="{
               'bg-purple-100 text-purple-800': row.role === 'superadmin',
               'bg-blue-100 text-blue-800': row.role === 'admin',
@@ -43,6 +43,13 @@
           {{ new Date(row.created_at).toLocaleDateString() }}
         </template>
       </Table>
+
+      <Pagination
+        :current-page="currentPage"
+        :total-items="users.length"
+        :items-per-page="itemsPerPage"
+        @page-change="goToPage"
+      />
     </div>
 
     <!-- Add Seller Modal -->
@@ -81,16 +88,34 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useUserStore } from '../../stores/userStore'
 import Table from '../../components/Table.vue'
+import Pagination from '../../components/Pagination.vue'
 import SellerForm from '../../components/SellerForm.vue'
+import { ITEMS_PER_PAGE } from '../../utils/constants'
 
 const userStore = useUserStore()
 const users = ref([])
 const loading = ref(false)
 const error = ref(null)
 const showAddModal = ref(false)
+const currentPage = ref(1)
+const itemsPerPage = ITEMS_PER_PAGE
+
+const paginatedUsers = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return users.value.slice(start, end)
+})
+
+function goToPage(page) {
+  const totalPages = Math.ceil(users.value.length / itemsPerPage)
+  if (page >= 1 && page <= totalPages) {
+    currentPage.value = page
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
 
 const columns = [
   { key: 'name', label: 'Name' },
