@@ -1,39 +1,39 @@
 <template>
-  <div v-if="totalPages > 1" class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+  <div v-if="totalPages > 1" class="flex items-center justify-between border-t-2 border-gray-200 bg-gradient-to-r from-gray-50 to-white px-4 py-4 sm:px-6 rounded-b-lg">
     <div class="flex flex-1 justify-between sm:hidden">
       <button
         @click="$emit('page-change', currentPage - 1)"
         :disabled="currentPage === 1"
-        class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="relative inline-flex items-center rounded-lg border-2 border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-blue-400 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-300"
       >
         Previous
       </button>
       <button
         @click="$emit('page-change', currentPage + 1)"
         :disabled="currentPage === totalPages"
-        class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="relative ml-3 inline-flex items-center rounded-lg border-2 border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 hover:border-blue-400 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-300"
       >
         Next
       </button>
     </div>
     <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
       <div>
-        <p class="text-sm text-gray-700">
+        <p class="text-sm text-gray-700 font-medium">
           Showing
-          <span class="font-medium">{{ startItem }}</span>
+          <span class="font-bold text-blue-600">{{ startItem }}</span>
           to
-          <span class="font-medium">{{ endItem }}</span>
+          <span class="font-bold text-blue-600">{{ endItem }}</span>
           of
-          <span class="font-medium">{{ totalItems }}</span>
+          <span class="font-bold text-gray-900">{{ totalItems }}</span>
           results
         </p>
       </div>
       <div>
-        <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+        <nav class="isolate inline-flex -space-x-px rounded-lg shadow-md" aria-label="Pagination">
           <button
             @click="$emit('page-change', currentPage - 1)"
             :disabled="currentPage === 1"
-            class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="relative inline-flex items-center rounded-l-lg px-3 py-2.5 text-gray-500 ring-2 ring-inset ring-gray-300 bg-white hover:bg-blue-50 hover:text-blue-600 focus:z-20 focus:outline-offset-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-gray-500 transition-all"
           >
             <span class="sr-only">Previous</span>
             <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -45,10 +45,10 @@
             :key="page"
             @click="$emit('page-change', page)"
             :class="[
-              'relative inline-flex items-center px-4 py-2 text-sm font-semibold',
+              'relative inline-flex items-center px-4 py-2.5 text-sm font-bold transition-all',
               page === currentPage
-                ? 'z-10 bg-blue-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
-                : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
+                ? 'z-10 bg-blue-600 text-white ring-2 ring-inset ring-blue-600 shadow-lg focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+                : 'text-gray-700 ring-2 ring-inset ring-gray-300 bg-white hover:bg-blue-50 hover:text-blue-600 focus:z-20 focus:outline-offset-0'
             ]"
           >
             {{ page }}
@@ -56,7 +56,7 @@
           <button
             @click="$emit('page-change', currentPage + 1)"
             :disabled="currentPage === totalPages"
-            class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="relative inline-flex items-center rounded-r-lg px-3 py-2.5 text-gray-500 ring-2 ring-inset ring-gray-300 bg-white hover:bg-blue-50 hover:text-blue-600 focus:z-20 focus:outline-offset-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-gray-500 transition-all"
           >
             <span class="sr-only">Next</span>
             <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
