@@ -1,6 +1,6 @@
 export const LOW_STOCK_THRESHOLD = 10
 
-export const ITEMS_PER_PAGE = 10
+export const ITEMS_PER_PAGE = 15
 
 export const TOAST_DURATION = 5000
 
