@@ -1,28 +1,28 @@
 <template>
   <div>
-    <div class="hidden md:block overflow-x-auto">
+    <div class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
       <table class="min-w-full divide-y divide-gray-200" role="table" aria-label="Data table">
-        <thead class="bg-gray-50">
+        <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
           <tr>
             <th
               v-for="column in columns"
               :key="column.key"
               scope="col"
-              class="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+              class="px-4 lg:px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200"
             >
               {{ column.label }}
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="(row, index) in data" :key="index" class="hover:bg-gray-50 transition-colors">
+        <tbody class="bg-white divide-y divide-gray-100">
+          <tr v-for="(row, index) in data" :key="index" class="hover:bg-blue-50/50 transition-all duration-150">
             <td
               v-for="column in columns"
               :key="column.key"
-              class="px-2 sm:px-4 py-3 sm:py-4 whitespace-nowrap text-sm text-gray-900"
+              class="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900"
             >
               <slot :name="column.key" :row="row" :value="row[column.key]">
-                {{ formatValue(row[column.key], column) }}
+                <span class="font-medium">{{ formatValue(row[column.key], column) }}</span>
               </slot>
             </td>
           </tr>
@@ -30,11 +30,11 @@
       </table>
     </div>
 
-    <div class="md:hidden space-y-4">
+    <div class="md:hidden space-y-3">
       <div
         v-for="(row, index) in data"
         :key="index"
-        class="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+        class="bg-white rounded-xl shadow-md border border-gray-200 p-4 hover:shadow-lg transition-shadow duration-200"
       >
         <div class="space-y-3">
           <div
@@ -42,7 +42,7 @@
             :key="column.key"
             class="flex justify-between items-start"
           >
-            <span class="text-xs font-medium text-gray-700 uppercase tracking-wider">
+            <span class="text-xs font-semibold text-gray-600 uppercase tracking-wider">
               {{ column.label }}
             </span>
             <span class="text-sm font-medium text-gray-900 text-right ml-4">
