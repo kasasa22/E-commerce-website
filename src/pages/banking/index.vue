@@ -122,42 +122,42 @@
 
         <div v-else>
           <!-- Aggregated View by Bank -->
-          <div class="hidden md:block overflow-x-auto">
+          <div class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
             <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+              <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bank</th>
-                  <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Transactions</th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                  <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Bank</th>
+                  <th class="px-6 py-3.5 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Transactions</th>
+                  <th class="px-6 py-3.5 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Total Amount</th>
+                  <th class="px-6 py-3.5 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Actions</th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="(bankData, bankId) in store.depositsByBank" :key="bankId" class="hover:bg-gray-50 transition-colors">
+              <tbody class="bg-white divide-y divide-gray-100">
+                <tr v-for="(bankData, bankId) in store.depositsByBank" :key="bankId" class="hover:bg-cyan-50/50 transition-all duration-150">
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm font-medium text-gray-900">{{ bankData.bank?.name || 'Unknown' }}</div>
+                    <div class="text-sm font-semibold text-gray-900">{{ bankData.bank?.name || 'Unknown' }}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <div class="text-sm text-gray-500">{{ bankData.count }}</div>
+                    <div class="text-sm font-medium text-gray-600">{{ bankData.count }}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-right">
-                    <div class="text-sm font-semibold text-green-600">{{ formatCurrency(bankData.total) }}</div>
+                    <div class="text-sm font-bold text-green-600">{{ formatCurrency(bankData.total) }}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <router-link
                       :to="{ name: 'bank-deposits-details', query: { bank_id: bankId } }"
-                      class="text-cyan-600 hover:text-cyan-900"
+                      class="text-cyan-600 hover:text-cyan-800 font-semibold hover:underline transition-colors"
                     >
                       View Details
                     </router-link>
                   </td>
                 </tr>
               </tbody>
-              <tfoot class="bg-gray-50">
+              <tfoot class="bg-gradient-to-r from-gray-100 to-gray-50 border-t-2 border-gray-300">
                 <tr>
-                  <td class="px-6 py-3 text-sm font-bold text-gray-900">Total</td>
-                  <td class="px-6 py-3 text-sm font-bold text-gray-500 text-center">{{ store.deposits.length }}</td>
-                  <td class="px-6 py-3 text-sm font-bold text-green-600 text-right">{{ formatCurrency(store.totalAllBanks) }}</td>
+                  <td class="px-6 py-4 text-sm font-bold text-gray-900">Total</td>
+                  <td class="px-6 py-4 text-sm font-bold text-gray-700 text-center">{{ store.deposits.length }}</td>
+                  <td class="px-6 py-4 text-sm font-bold text-green-600 text-right">{{ formatCurrency(store.totalAllBanks) }}</td>
                   <td></td>
                 </tr>
               </tfoot>
@@ -166,17 +166,17 @@
 
           <!-- Mobile View - Aggregated by Bank -->
           <div class="md:hidden divide-y divide-gray-200">
-            <div v-for="(bankData, bankId) in store.depositsByBank" :key="bankId" class="p-4">
+            <div v-for="(bankData, bankId) in store.depositsByBank" :key="bankId" class="p-4 hover:bg-cyan-50 transition-colors">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex-1 min-w-0 pr-3">
                   <div class="text-sm font-bold text-gray-900 truncate">{{ bankData.bank?.name || 'Unknown' }}</div>
-                  <div class="text-xs text-gray-500 mt-0.5">{{ bankData.count }} transactions</div>
+                  <div class="text-xs font-semibold text-gray-500 mt-1">{{ bankData.count }} transactions</div>
                 </div>
                 <p class="text-base font-bold text-green-600 flex-shrink-0">{{ formatCurrency(bankData.total) }}</p>
               </div>
               <router-link
                 :to="{ name: 'bank-deposits-details', query: { bank_id: bankId } }"
-                class="inline-block mt-2 text-sm text-cyan-600 hover:text-cyan-800 font-medium"
+                class="inline-block mt-3 text-sm text-cyan-600 hover:text-cyan-800 font-semibold px-3 py-1.5 hover:bg-cyan-50 rounded-lg transition-all"
               >
                 View Details &rarr;
               </router-link>
