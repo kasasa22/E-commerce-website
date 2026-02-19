@@ -53,15 +53,15 @@
     </div>
 
     <div v-else>
-      <div class="mb-4">
+      <div class="mb-6">
         <div class="relative">
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search sales by product name or date..."
-            class="block w-full sm:w-80 rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-4 py-2 pl-10"
+            class="block w-full sm:w-96 rounded-lg border-2 border-gray-300 shadow-md focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-3 pl-11 transition-all"
           />
-          <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
@@ -71,35 +71,46 @@
         <p class="text-gray-500">No sales match your search.</p>
       </div>
 
-      <div v-else class="bg-white shadow overflow-hidden sm:rounded-md" id="report-table">
+      <div v-else class="bg-white shadow-lg overflow-hidden rounded-xl border border-gray-200" id="report-table">
         <Table
           :columns="columns"
-          :data="filteredSales"
+          :data="paginatedSales"
         >
         <template #product_name="{ row }">
-          {{ row.products?.name || '-' }}
+          <span class="font-semibold">{{ row.products?.name || '-' }}</span>
         </template>
         <template #profit="{ row }">
-          <span :class="row.profit >= 0 ? 'text-green-600' : 'text-red-600'">
+          <span class="font-bold" :class="row.profit >= 0 ? 'text-green-600' : 'text-red-600'">
             {{ formatCurrency(row.profit) }}
           </span>
         </template>
       </Table>
+
+      <Pagination
+        :current-page="currentPage"
+        :total-items="filteredSales.length"
+        :items-per-page="itemsPerPage"
+        @page-change="goToPage"
+      />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useSalesStore } from '../../stores/salesStore'
 import Table from '../../components/Table.vue'
+import Pagination from '../../components/Pagination.vue'
 import { getDefaultCurrency } from '../../utils/supabase'
+import { ITEMS_PER_PAGE } from '../../utils/constants'
 
 const salesStore = useSalesStore()
 const currency = getDefaultCurrency()
 const selectedMonth = ref(new Date().toISOString().slice(0, 7))
 const searchQuery = ref('')
+const currentPage = ref(1)
+const itemsPerPage = ITEMS_PER_PAGE
 
 const monthlySales = computed(() => {
   if (!salesStore.sales || salesStore.sales.length === 0) return []
@@ -131,6 +142,24 @@ const filteredSales = computed(() => {
            quantity.includes(query) ||
            price.includes(query)
   })
+})
+
+const paginatedSales = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredSales.value.slice(start, end)
+})
+
+function goToPage(page) {
+  const totalPages = Math.ceil(filteredSales.value.length / itemsPerPage)
+  if (page >= 1 && page <= totalPages) {
+    currentPage.value = page
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
+watch([searchQuery, selectedMonth], () => {
+  currentPage.value = 1
 })
 
 const totalRevenue = computed(() => {
