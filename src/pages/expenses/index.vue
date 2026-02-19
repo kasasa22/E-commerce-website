@@ -58,14 +58,14 @@
       </div>
     </div>
 
-    <div class="relative">
+    <div v-if="store.expenses.length > 0" class="relative">
       <input
         v-model="searchQuery"
         type="text"
         placeholder="Search expenses..."
-        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
+        class="w-full pl-11 pr-4 py-3 border-2 border-gray-300 rounded-lg shadow-md focus:ring-2 focus:ring-blue-200 focus:border-blue-500 text-sm transition-all"
       />
-      <svg class="absolute left-3 top-3 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="absolute left-3.5 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
     </div>
@@ -93,30 +93,30 @@
       </div>
 
       <div v-else>
-        <div class="hidden md:block overflow-x-auto">
+        <div class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
           <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+            <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th v-if="userStore.isAdmin" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Title</th>
+                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Amount</th>
+                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Date</th>
+                <th v-if="userStore.isAdmin" class="px-6 py-3.5 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Actions</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="expense in filteredExpenses" :key="expense.id" class="hover:bg-gray-50 transition-colors">
+            <tbody class="bg-white divide-y divide-gray-100">
+              <tr v-for="expense in paginatedExpenses" :key="expense.id" class="hover:bg-blue-50/50 transition-all duration-150">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ expense.title }}</div>
+                  <div class="text-sm font-semibold text-gray-900">{{ expense.title }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-semibold text-red-600">{{ formatCurrency(expense.amount) }}</div>
+                  <div class="text-sm font-bold text-red-600">{{ formatCurrency(expense.amount) }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ formatDate(expense.expense_date) }}</div>
+                  <div class="text-sm font-medium text-gray-600">{{ formatDate(expense.expense_date) }}</div>
                 </td>
                 <td v-if="userStore.isAdmin" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button @click="openEditModal(expense)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                  <button @click="confirmDelete(expense)" class="text-red-600 hover:text-red-900">Delete</button>
+                  <button @click="openEditModal(expense)" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline mr-4 transition-colors">Edit</button>
+                  <button @click="confirmDelete(expense)" class="text-red-600 hover:text-red-800 font-semibold hover:underline transition-colors">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -124,20 +124,27 @@
         </div>
 
         <div class="md:hidden divide-y divide-gray-200">
-          <div v-for="expense in filteredExpenses" :key="expense.id" class="p-4">
+          <div v-for="expense in paginatedExpenses" :key="expense.id" class="p-4 hover:bg-gray-50 transition-colors">
             <div class="flex justify-between items-start mb-2">
               <div class="flex-1 min-w-0 pr-3">
                 <div class="text-sm font-bold text-gray-900 truncate">{{ expense.title }}</div>
-                <div class="text-xs text-gray-500 mt-0.5">{{ formatDate(expense.expense_date) }}</div>
+                <div class="text-xs font-semibold text-gray-500 mt-0.5">{{ formatDate(expense.expense_date) }}</div>
               </div>
               <p class="text-base font-bold text-red-600 flex-shrink-0">{{ formatCurrency(expense.amount) }}</p>
             </div>
             <div v-if="userStore.isAdmin" class="flex gap-2 mt-3">
-              <button @click="openEditModal(expense)" class="flex-1 px-3 py-2 text-sm text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 font-medium">Edit</button>
-              <button @click="confirmDelete(expense)" class="flex-1 px-3 py-2 text-sm text-red-600 border border-red-600 rounded-lg hover:bg-red-50 font-medium">Delete</button>
+              <button @click="openEditModal(expense)" class="flex-1 px-3 py-2 text-sm text-blue-600 border-2 border-blue-600 rounded-lg hover:bg-blue-50 font-semibold transition-colors">Edit</button>
+              <button @click="confirmDelete(expense)" class="flex-1 px-3 py-2 text-sm text-red-600 border-2 border-red-600 rounded-lg hover:bg-red-50 font-semibold transition-colors">Delete</button>
             </div>
           </div>
         </div>
+
+        <Pagination
+          :current-page="currentPage"
+          :total-items="filteredExpenses.length"
+          :items-per-page="itemsPerPage"
+          @page-change="goToPage"
+        />
       </div>
     </div>
 
@@ -229,6 +236,8 @@ import { useUserStore } from '../../stores/userStore'
 import { useToast } from '../../composables/useToast'
 import { formatCurrency, formatDate } from '../../utils/formatters'
 import { getDefaultCurrency } from '../../utils/supabase'
+import { ITEMS_PER_PAGE } from '../../utils/constants'
+import Pagination from '../../components/Pagination.vue'
 
 const store = useExpensesBankingStore()
 const userStore = useUserStore()
@@ -241,6 +250,8 @@ const isEditing = ref(false)
 const saving = ref(false)
 const deleting = ref(false)
 const expenseToDelete = ref(null)
+const currentPage = ref(1)
+const itemsPerPage = ITEMS_PER_PAGE
 
 const form = ref({
   id: null,
@@ -262,6 +273,20 @@ const filteredExpenses = computed(() => {
   }
   return result
 })
+
+const paginatedExpenses = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredExpenses.value.slice(start, end)
+})
+
+function goToPage(page) {
+  const totalPages = Math.ceil(filteredExpenses.value.length / itemsPerPage)
+  if (page >= 1 && page <= totalPages) {
+    currentPage.value = page
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
 
 onMounted(async () => {
   await store.fetchExpenses()
