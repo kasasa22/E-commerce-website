@@ -10,33 +10,33 @@
       </button>
     </div>
 
-    <div v-if="!salesStore.loading && salesStore.sales.length > 0" class="mb-4 flex flex-col md:flex-row gap-4">
-      <div class="relative flex-grow md:flex-grow-0 md:w-80">
+    <div v-if="!salesStore.loading && salesStore.sales.length > 0" class="mb-6 flex flex-col md:flex-row gap-4">
+      <div class="relative flex-grow md:flex-grow-0 md:w-96">
         <input
           v-model="searchQuery"
           type="text"
           placeholder="Search sales by product name..."
-          class="block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-4 py-2 pl-10"
+          class="block w-full rounded-lg border-2 border-gray-300 shadow-md focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-3 pl-11 transition-all"
         />
-        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="absolute left-3.5 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
-      
-      <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+
+      <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
         <div class="flex items-center gap-2">
-          <label for="dateFilter" class="text-sm text-gray-600 whitespace-nowrap">Filter by Date:</label>
+          <label for="dateFilter" class="text-sm text-gray-700 font-semibold whitespace-nowrap">Filter by Date:</label>
           <input
             id="dateFilter"
             v-model="dateFilter"
             type="date"
-            class="block w-full sm:w-auto rounded-md border-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm px-3 py-2"
+            class="block w-full sm:w-auto rounded-lg border-2 border-gray-300 shadow-md focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-3 py-2.5 transition-all"
           />
         </div>
-        <button 
+        <button
           v-if="dateFilter"
           @click="clearDateFilter"
-          class="text-sm text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap"
+          class="text-sm text-blue-600 hover:text-blue-800 font-semibold whitespace-nowrap px-3 py-1.5 hover:bg-blue-50 rounded-lg transition-all"
         >
           Clear Date
         </button>
@@ -71,27 +71,27 @@
       description="Try adjusting your search terms or date filter."
     />
 
-    <div v-else class="bg-white shadow overflow-hidden sm:rounded-md">
+    <div v-else class="bg-white shadow-lg overflow-hidden rounded-xl border border-gray-200">
       <div class="hidden md:block">
         <Table
           :columns="columns"
           :data="paginatedSales"
         >
           <template #product_name="{ row }">
-            {{ row.products?.name || '-' }}
+            <span class="font-semibold">{{ row.products?.name || '-' }}</span>
           </template>
           <template #total="{ row }">
-            {{ formatCurrency(row.quantity * row.selling_price) }}
+            <span class="font-bold text-blue-600">{{ formatCurrency(row.quantity * row.selling_price) }}</span>
           </template>
           <template v-if="userStore.isAdmin" #profit="{ row }">
-            <span :class="row.profit >= 0 ? 'text-green-600' : 'text-red-600'">
+            <span class="font-bold" :class="row.profit >= 0 ? 'text-green-600' : 'text-red-600'">
               {{ formatCurrency(row.profit) }}
             </span>
           </template>
           <template v-if="userStore.isAdmin" #actions="{ row }">
             <button
               @click="handleEdit(row)"
-              class="text-blue-600 hover:text-blue-900 font-medium"
+              class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
             >
               Edit
             </button>
@@ -103,47 +103,47 @@
         <div
           v-for="sale in paginatedSales"
           :key="sale.id"
-          class="bg-white rounded-lg border border-gray-200 p-4 shadow-sm"
+          class="bg-white rounded-xl border-2 border-gray-200 p-5 shadow-md hover:shadow-lg transition-shadow"
         >
           <div class="space-y-3">
             <div class="flex justify-between items-start">
               <div>
-                <h3 class="text-base font-semibold text-gray-900">
+                <h3 class="text-base font-bold text-gray-900">
                   {{ sale.products?.name || 'Unknown Product' }}
                 </h3>
-                <p class="text-xs text-gray-500 mt-1">
+                <p class="text-xs font-semibold text-gray-500 mt-1">
                   {{ new Date(sale.sold_at).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) }}
                 </p>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+            <div class="grid grid-cols-2 gap-3 pt-3 border-t-2 border-gray-100">
               <div>
-                <p class="text-xs text-gray-500">Quantity</p>
-                <p class="text-sm font-medium text-gray-900">{{ sale.quantity }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Quantity</p>
+                <p class="text-sm font-bold text-gray-900 mt-1">{{ sale.quantity }}</p>
               </div>
               <div>
-                <p class="text-xs text-gray-500">Selling Price</p>
-                <p class="text-sm font-medium text-gray-900">{{ formatCurrency(sale.selling_price) }}</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase">Selling Price</p>
+                <p class="text-sm font-bold text-gray-900 mt-1">{{ formatCurrency(sale.selling_price) }}</p>
               </div>
               <div>
-                <p class="text-xs text-gray-500">Total Amount</p>
-                <p class="text-sm font-medium text-gray-900">
+                <p class="text-xs font-semibold text-gray-500 uppercase">Total Amount</p>
+                <p class="text-sm font-bold text-blue-600 mt-1">
                   {{ formatCurrency(sale.selling_price * sale.quantity) }}
                 </p>
               </div>
               <div v-if="userStore.isAdmin">
-                <p class="text-xs text-gray-500">Profit/Loss</p>
-                <p class="text-sm font-medium" :class="sale.profit >= 0 ? 'text-green-600' : 'text-red-600'">
+                <p class="text-xs font-semibold text-gray-500 uppercase">Profit/Loss</p>
+                <p class="text-sm font-bold mt-1" :class="sale.profit >= 0 ? 'text-green-600' : 'text-red-600'">
                   {{ formatCurrency(sale.profit) }}
                 </p>
               </div>
             </div>
-            
-            <div v-if="userStore.isAdmin" class="pt-3 border-t border-gray-100 flex justify-end">
+
+            <div v-if="userStore.isAdmin" class="pt-3 border-t-2 border-gray-100 flex justify-end">
               <button
                 @click="handleEdit(sale)"
-                class="text-sm font-medium text-blue-600 hover:text-blue-900"
+                class="text-sm font-semibold text-blue-600 hover:text-blue-800 px-3 py-1.5 hover:bg-blue-50 rounded-lg transition-all"
               >
                 Edit Sale
               </button>
@@ -151,7 +151,7 @@
           </div>
         </div>
       </div>
-      
+
       <Pagination
         :current-page="currentPage"
         :total-items="filteredSales.length"
