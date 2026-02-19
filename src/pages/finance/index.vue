@@ -132,39 +132,39 @@
 
       <div v-else>
         <!-- Desktop Table View -->
-        <div class="hidden md:block overflow-x-auto">
+        <div class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
           <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+            <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remaining</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Name</th>
+                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Total Amount</th>
+                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Remaining</th>
+                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Due Date</th>
+                <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Status</th>
+                <th class="px-6 py-3.5 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200">Actions</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="item in currentData" :key="item.id" class="hover:bg-gray-50 transition-colors">
+            <tbody class="bg-white divide-y divide-gray-100">
+              <tr v-for="item in currentData" :key="item.id" class="hover:bg-blue-50/50 transition-all duration-150">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ item.name }}</div>
-                  <div class="text-xs text-gray-500 truncate max-w-xs">{{ item.description || 'No description' }}</div>
+                  <div class="text-sm font-semibold text-gray-900">{{ item.name }}</div>
+                  <div class="text-xs font-medium text-gray-500 truncate max-w-xs mt-0.5">{{ item.description || 'No description' }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ formatCurrency(item.total_amount) }}</div>
+                  <div class="text-sm font-medium text-gray-600">{{ formatCurrency(item.total_amount) }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-semibold text-gray-900">{{ formatCurrency(item.remaining_amount) }}</div>
+                  <div class="text-sm font-bold text-gray-900">{{ formatCurrency(item.remaining_amount) }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ formatDate(item.due_date) }}</div>
+                  <div class="text-sm font-medium text-gray-600">{{ formatDate(item.due_date) }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span
                     :class="[
-                      item.status === 'paid' ? 'bg-green-100 text-green-800' : 
-                      item.status === 'partial' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800',
-                      'px-2.5 py-0.5 rounded-full text-xs font-medium capitalize'
+                      item.status === 'paid' ? 'bg-green-100 text-green-800 border-green-200' :
+                      item.status === 'partial' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                      'px-3 py-1 rounded-full text-xs font-semibold capitalize border'
                     ]"
                   >
                     {{ item.status }}
@@ -173,10 +173,10 @@
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <router-link
                     :to="{ name: 'finance-details', params: { type: activeTab === 'debtors' ? 'debtor' : 'creditor', id: item.id } }"
-                    class="inline-flex items-center px-3 py-1.5 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                    class="inline-flex items-center px-4 py-2 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 font-semibold transition-colors"
                   >
                     View Details
-                    <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                   </router-link>
@@ -188,17 +188,17 @@
 
         <!-- Mobile Card View -->
         <div class="md:hidden divide-y divide-gray-200">
-        <div v-for="item in currentData" :key="item.id" class="p-4 space-y-3">
+        <div v-for="item in currentData" :key="item.id" class="p-4 space-y-3 hover:bg-gray-50 transition-colors">
           <div class="flex justify-between items-start">
             <div>
               <div class="text-sm font-bold text-gray-900">{{ item.name }}</div>
-              <div class="text-xs text-gray-500 mt-1">{{ formatDate(item.due_date) }}</div>
+              <div class="text-xs font-semibold text-gray-500 mt-1">{{ formatDate(item.due_date) }}</div>
             </div>
             <span
               :class="[
-                item.status === 'paid' ? 'bg-green-100 text-green-800' : 
-                item.status === 'partial' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800',
-                'px-2.5 py-0.5 rounded-full text-xs font-medium capitalize'
+                item.status === 'paid' ? 'bg-green-100 text-green-800 border-green-200' :
+                item.status === 'partial' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                'px-3 py-1 rounded-full text-xs font-semibold capitalize border'
               ]"
             >
               {{ item.status }}
@@ -206,17 +206,17 @@
           </div>
           <div class="grid grid-cols-2 gap-4 py-2">
             <div>
-              <p class="text-xs text-gray-500 uppercase font-semibold">Total</p>
-              <p class="text-sm text-gray-900">{{ formatCurrency(item.total_amount) }}</p>
+              <p class="text-xs text-gray-600 uppercase font-semibold">Total</p>
+              <p class="text-sm font-semibold text-gray-900 mt-1">{{ formatCurrency(item.total_amount) }}</p>
             </div>
             <div>
-              <p class="text-xs text-gray-500 uppercase font-semibold">Remaining</p>
-              <p class="text-sm font-bold text-blue-600">{{ formatCurrency(item.remaining_amount) }}</p>
+              <p class="text-xs text-gray-600 uppercase font-semibold">Remaining</p>
+              <p class="text-sm font-bold text-blue-600 mt-1">{{ formatCurrency(item.remaining_amount) }}</p>
             </div>
           </div>
           <router-link
             :to="{ name: 'finance-details', params: { type: activeTab === 'debtors' ? 'debtor' : 'creditor', id: item.id } }"
-            class="block w-full text-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
+            class="block w-full text-center px-4 py-2.5 border-2 border-blue-600 text-blue-600 rounded-lg text-sm font-semibold hover:bg-blue-50 transition-colors"
           >
             View Details
           </router-link>
